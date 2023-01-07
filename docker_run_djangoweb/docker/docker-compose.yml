@@ -13,7 +13,7 @@ services:
   #     - web
   web:
     build: .
-    command: ./dev_start.sh #bash -c "python django1/manage.py runserver 0.0.0.0:8000 > django.log 2>&1"
+    command: bash -c "python django1/manage.py runserver 0.0.0.0:8000 > django.log 2>&1" #./dev_start.sh #
     volumes:
       - ..:/src
     ports:
