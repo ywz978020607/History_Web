@@ -1,0 +1,11 @@
+files/*
+!files/*.png
+!files/*.jpg
+django1/app1/migrations/*
+*.pid
+*.log
+docker/log/*
+# 首次添加仓库后删除,保证后续修改账号密码后不会被重置
+# >> git update-index --assume-unchanged django1/db.sqlite3 # 取消以后的更新，但需要保留目前git的状态
+# >> git update-index --no-assume-unchanged django1/db.sqlite3 #恢复
+# django1/db.sqlite3
