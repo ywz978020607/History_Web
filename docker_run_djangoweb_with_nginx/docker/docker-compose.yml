@@ -1,0 +1,32 @@
+version: '3'
+services:
+  wotnginx:
+    image: nginx:latest
+    container_name: nginx_wot
+    ports:
+      - "81:80"
+    volumes:
+      - ..:/src
+      # - /var/www/html:/src/files #you can change this ori path, be consistent with next one
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - wotweb
+  wotweb:
+    build: .
+    image: wot_image_backend
+    # command: ./dev_start.sh #bash -c "python django1/manage.py runserver 0.0.0.0:8000 > django.log 2>&1"
+    command: #串行 最后一个暂驻
+      - bash
+      - -c
+      - |
+          # python django1/mqtt.py  > docker/log/mqtt.log 2>&1 &
+          uwsgi --ini django1/uwsgi.ini && tail -f /dev/null
+
+    volumes:
+      - ..:/src
+      # - /var/www/html:/src/files #you can change this ori path, be consistent with last one
+    # ports:
+    #   - "8000:8000"
+    expose:
+      - "8000"
+    restart: always
