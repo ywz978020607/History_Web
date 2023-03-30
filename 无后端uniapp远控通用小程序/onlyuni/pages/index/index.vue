@@ -15,7 +15,7 @@
 	            </div>
 	        </header>
 	        <!-- body-block  -->
-			<div style="display: flex;flex-direction: column;align-items: center;">
+			<div style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 		            <span v-html="'<br>'"></span><span v-html="'<br>'"></span>
 					<span style="white-space: pre-wrap;">
 						<div class="flex">
@@ -25,9 +25,9 @@
 						</div>
 						</span>
 						<span v-html="'<br>'"></span>
-						<div v-if="seen_id==0" style="display: flex;flex-direction: column;align-items: center;">
+						<div v-if="seen_id==0" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 							<hr style="width: 100%; size: 3em;" />
-							<div v-for="(each,key,index) in temp_data" style="display: flex;flex-direction: column;align-items: center;">
+							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 								<p>备注: {{each["comments"]}} </p>
 								<p v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </p><p v-else-if="each.device_type != 3" style="">{{each["status"]}} </p>
 								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
@@ -85,10 +85,10 @@
 								</div>
 								
 								<!-- 地图显示 -->
-								<div v-if="each['device_type'] == 3" style="display: flex;flex-direction: column;align-items: center;">
+								<div v-if="each['device_type'] == 3" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 									<!-- {{each.datastreams[0]["value"]["lat"]}} -->
-									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
-										<view v-if="data_each.id == 'location'" class="row-bottom" style="display: flex;flex-direction: column;align-items: center;">
+									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+										<view v-if="data_each.id == 'location'" class="row-bottom" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 											<p>{{data_each["at"]}}</p>
 											<!-- <p>{{data_each.value.lon}},{{data_each.value.lat}}</p> -->
 											<map id="map" :longitude="data_each.value.lon" :latitude="data_each.value.lat" :scale="16" :circles="circles" 
