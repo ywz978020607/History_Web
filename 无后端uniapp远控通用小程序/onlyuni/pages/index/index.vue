@@ -23,11 +23,9 @@
 							<button  class="btn btn-primary" @click="seen_id=1;init_info();">修改信息</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 							<button  class="btn btn-primary" @click="seen_id=2;check_main(2);">WIFI-HID注入</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 						</div> -->
-						<select v-model = "seen_id" @change="change_seen_id(seen_id)">
-							<option value=0>远程物联</option>
-							<option value=1>修改信息</option>
-							<option value=2>广域HID</option>
-						</select>
+						<picker v-model = "seen_id" @change="change_seen_id" :value="seen_id" :range="seen_id_tags">
+							<view>{{seen_id_tags[seen_id]}}</view>
+						</picker>
 
 						</span>
 						<span v-html="'<br>'"></span>
@@ -117,10 +115,6 @@
 								<view class="divider" />
 								<!-- #endif -->
 							</div>
-						
-						
-
-						
 						</div>
 		
 						<div v-if="seen_id==1" style="display: inline-block;">

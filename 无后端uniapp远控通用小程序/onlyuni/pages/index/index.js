@@ -19,6 +19,7 @@ export default {
 			// canvasnamelist:["canvasGauge0","canvasGauge1"],
 			// username: "",
 			intervalId: null,
+			seen_id_tags: ["远程物联", "修改信息", "广域HID"],
 			seen_id: 0,
 			//////////////
 			///画图变量
@@ -124,7 +125,8 @@ export default {
 			},
 			/////////////////////////////////////
 			//操作--button1
-			change_seen_id(){
+			change_seen_id(e){
+				this.seen_id = e.target.value;
 				uni.setStorageSync("seen_id", this.seen_id);
 				switch(this.seen_id){
 					case 0:
@@ -140,6 +142,7 @@ export default {
 			},
 			check_main(seen_id = "") {
 				console.log("check once");
+				return;
 				var that = this;
 				that.device_ids = uni.getStorageSync("device_ids");
 				that.api_key = uni.getStorageSync("api_key");
