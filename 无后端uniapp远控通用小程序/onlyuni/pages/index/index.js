@@ -142,7 +142,6 @@ export default {
 			},
 			check_main(seen_id = "") {
 				console.log("check once");
-				return;
 				var that = this;
 				that.device_ids = uni.getStorageSync("device_ids");
 				that.api_key = uni.getStorageSync("api_key");
@@ -156,90 +155,94 @@ export default {
 				var hid_usb_split = that.hid_usb.split(",");
 				var temp_data = {};
 				
-				// WIFI-HID类型只查询在线状态
-				if (seen_id == 2){
-					for(var idx=0;idx<hid_usb_split.length;idx++){
-						temp_data[hid_usb_split[idx]] = {
-							"status": "在线",
-							"datastreams": [],
-						}
-					}
-					uni.request({
-						url: that.direction + "/devices/status",
-						// url: "http://183.230.40.34/devices/status",
-						header: { "api-key": that.api_key},
-						data: {'devIds':that.hid_usb},
-						method:'GET',//请求方式  或GET，必须为大写
-						success: res => {
-							// console.log('返回status', res.data["data"]);
-							for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
-								var device_data = res.data["data"]["devices"][idx];
-								if (device_data["online"] == false){
-									temp_data[device_data["id"]]["status"] = "离线";
-								}
+				try{	
+					// WIFI-HID类型只查询在线状态
+					if (seen_id == 2){
+						for(var idx=0;idx<hid_usb_split.length;idx++){
+							temp_data[hid_usb_split[idx]] = {
+								"status": "在线",
+								"datastreams": [],
 							}
 						}
-					  });
-				}
-				else {
-					// 首页
-					for(var idx=0;idx<device_id_split.length;idx++){
-						temp_data[device_id_split[idx]] = {
-							"device_type": devices_type[idx],
-							"comments": comments_split[idx],
-							"status": "在线",
-							"datastreams": [],
-						}
-					}
-					// 在线状态
-					uni.request({
-						url: that.direction + "/devices/status",
-						// url: "http://183.230.40.34/devices/status",
-						header: { "api-key": that.api_key},
-						data: {'devIds':that.device_ids},
-						method:'GET',//请求方式  或GET，必须为大写
-						success: res => {
-							// console.log('返回status', res.data["data"]);
-							for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
-								var device_data = res.data["data"]["devices"][idx];
-								if (device_data["online"] == false){
-									temp_data[device_data["id"]]["status"] = "离线";
-								}
-							}
-						}
-					  });
-					// 数据内容
-					uni.request({
-						url: that.direction + "/devices/datapoints",
-						header: { "api-key": that.api_key},
-						data: {'devIds':that.device_ids},
-						method:'GET',//请求方式  或GET，必须为大写
-						success: res => {
-							// console.log('返回', res.data["data"]);
-							for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
-								var device_data = res.data["data"]["devices"][idx];
-								// 修改顺序 data0 data2 ..
-								device_data["datastreams"].sort((a, b)=>{
-									return (a["id"] > b["id"])? 1:-1;
-								});
-								// 坐标转换
-								for (var in_idx = 0; in_idx < device_data["datastreams"].length;in_idx++){
-									if(device_data["datastreams"][in_idx]["id"] == "location"){
-										var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
-										device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
-										device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
+						uni.request({
+							url: that.direction + "/devices/status",
+							// url: "http://183.230.40.34/devices/status",
+							header: { "api-key": that.api_key},
+							data: {'devIds':that.hid_usb},
+							method:'GET',//请求方式  或GET，必须为大写
+							success: res => {
+								// console.log('返回status', res.data["data"]);
+								for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
+									var device_data = res.data["data"]["devices"][idx];
+									if (device_data["online"] == false){
+										temp_data[device_data["id"]]["status"] = "离线";
 									}
 								}
-								
-								
-								temp_data[device_data["id"]]["datastreams"] = device_data["datastreams"];
-								
+							}
+						});
+					}
+					else {
+						// 首页
+						for(var idx=0;idx<device_id_split.length;idx++){
+							temp_data[device_id_split[idx]] = {
+								"device_type": devices_type[idx],
+								"comments": comments_split[idx],
+								"status": "在线",
+								"datastreams": [],
 							}
 						}
-					  });
-					  
+						// 在线状态
+						uni.request({
+							url: that.direction + "/devices/status",
+							// url: "http://183.230.40.34/devices/status",
+							header: { "api-key": that.api_key},
+							data: {'devIds':that.device_ids},
+							method:'GET',//请求方式  或GET，必须为大写
+							success: res => {
+								// console.log('返回status', res.data["data"]);
+								for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
+									var device_data = res.data["data"]["devices"][idx];
+									if (device_data["online"] == false){
+										temp_data[device_data["id"]]["status"] = "离线";
+									}
+								}
+							}
+						});
+						// 数据内容
+						uni.request({
+							url: that.direction + "/devices/datapoints",
+							header: { "api-key": that.api_key},
+							data: {'devIds':that.device_ids},
+							method:'GET',//请求方式  或GET，必须为大写
+							success: res => {
+								// console.log('返回', res.data["data"]);
+								for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
+									var device_data = res.data["data"]["devices"][idx];
+									// 修改顺序 data0 data2 ..
+									device_data["datastreams"].sort((a, b)=>{
+										return (a["id"] > b["id"])? 1:-1;
+									});
+									// 坐标转换
+									for (var in_idx = 0; in_idx < device_data["datastreams"].length;in_idx++){
+										if(device_data["datastreams"][in_idx]["id"] == "location"){
+											var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
+											device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
+											device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
+										}
+									}
+									
+									
+									temp_data[device_data["id"]]["datastreams"] = device_data["datastreams"];
+									
+								}
+							}
+						});
+						
+					}
+					that.temp_data = temp_data;
+				}catch(e){
+					console.log("check main error", e);
 				}
-				that.temp_data = temp_data;
 			},
 			send(device_id, key_name, action) {
 				var that = this;
