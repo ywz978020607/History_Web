@@ -1,14 +1,11 @@
-import uCharts from '@/static/u-charts/u-charts.js';
-import wxCharts from '@/static/wxcharts.js'; //@=../..
+// import uCharts from '@/static/u-charts/u-charts.js';
+// import wxCharts from '@/static/wxcharts.js'; //@=../..
 var _self;
-var canvaGauge=null; //必须！否则报错
-
-	var _self;
-	var canvaLineA=null;
-	//这里的Data为测试使用，生产环境请从服务器获取
-	var Data={
-		LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]},{name: '成交量D',data:[100, 80, 95, 150, 112, 132]}]},
-		}
+// var canvaGauge=null; //必须！否则报错
+// //这里的Data为测试使用，生产环境请从服务器获取
+// var Data={
+// 	LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]},{name: '成交量D',data:[100, 80, 95, 150, 112, 132]}]},
+// 	}
 		
 export default {
 	data() {
@@ -19,49 +16,47 @@ export default {
 			comments: "",
 			trigger_time: "",
 			hid_usb: "",
-			canvasnamelist:["canvasGauge0","canvasGauge1"],
-			title: 'Hello',
-		  username: "",
-		  intervalId: null,
-		  seen_id: 0,
-		  //////////////
-		  val: [
-			  0, 1
-		  ],
-		  ///画图变量
-		  cWidth:'',
-		cHeight:'',
-		pixelRatio:1,
-		  //翻页变量
-		  temp_index: 0,
-		  all_count: null,
-		  charts_len: 7,
-		  //// 
-		  res_time: "",
-		  //// 
-		  input_val: [null, null, null, null, null, null, 5, null], //初始8个null
-		  temp_data: {},
-		  res_data1: [], 
-		  // direction: "/uploadapi"
-		  // direction: "http://127.0.0.1:8000"
-		  // direction: "http://ywz3.buaamc2.net:9013/seepapi"
-		// direction: "http://192.168.137.1:8000"
-		//#ifndef H5
-		direction: "https://api.heclouds.com", // "http://183.230.40.34"
-		//#endif
-		//#ifdef H5
-		direction: "/unionenet",
-		//#endif
+			// canvasnamelist:["canvasGauge0","canvasGauge1"],
+			// username: "",
+			intervalId: null,
+			seen_id: 0,
+			//////////////
+			///画图变量
+			cWidth:'',
+			cHeight:'',
+			pixelRatio:1,
+			//翻页变量
+			temp_index: 0,
+			all_count: null,
+			charts_len: 7,
+			//
+			input_val: [null, null, null, null, null, null, 5, null], //初始化, null可缺省
+			// 0-产品ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
+			// 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型]，
+			temp_data: {},
+			//#ifndef H5
+			direction: "https://api.heclouds.com", // "http://183.230.40.34"
+			//#endif
+			//#ifdef H5
+			direction: "/unionenet",
+			//#endif
 		}
 	},
 	onLoad(options) {
-		console.log("Op:",options)
-		if(options=={}){
-		this.username="test";
+		// console.log("Op:",options)
+		// if(options=={}){
+		// this.username="test";
+		// }
+		// else{
+		// this.username = options.username;		
+		// }
+		if(uni.getStorageSync("seen_id")){
+			this.seen_id = uni.getStorageSync("seen_id");
+		} else{
+			this.seen_id = 0;
 		}
-		else{
-		this.username = options.username;		
-		}
+		console.log("seen_id:", this.seen_id);
+
 		//加载时先刷新一下
 		// this.fresh();
 		this.check_main(this.seen_id);
@@ -129,6 +124,20 @@ export default {
 			},
 			/////////////////////////////////////
 			//操作--button1
+			change_seen_id(){
+				uni.setStorageSync("seen_id", this.seen_id);
+				switch(this.seen_id){
+					case 0:
+						this.check_main(0);
+						break;
+					case 1:
+						this.init_info();
+						break;
+					case 2:
+						this.check_main(2);
+						break;
+				}
+			},
 			check_main(seen_id = "") {
 				console.log("check once");
 				var that = this;
@@ -143,6 +152,8 @@ export default {
 				var devices_type = that.device_type.split(",");
 				var hid_usb_split = that.hid_usb.split(",");
 				var temp_data = {};
+				
+				// WIFI-HID类型只查询在线状态
 				if (seen_id == 2){
 					for(var idx=0;idx<hid_usb_split.length;idx++){
 						temp_data[hid_usb_split[idx]] = {
@@ -177,7 +188,7 @@ export default {
 							"datastreams": [],
 						}
 					}
-					//
+					// 在线状态
 					uni.request({
 						url: that.direction + "/devices/status",
 						// url: "http://183.230.40.34/devices/status",
@@ -194,7 +205,7 @@ export default {
 							}
 						}
 					  });
-					
+					// 数据内容
 					uni.request({
 						url: that.direction + "/devices/datapoints",
 						header: { "api-key": that.api_key},
@@ -250,7 +261,7 @@ export default {
 			},
 			translate_gps(lat, lon){
 				var util = require('../../static/WSCoordinate.js');
-				var res1 = util.transformFromWGSToGCJ(lat, lon);
+				var res1 = util.transformFromWGSToGCJ(lat, lon); // 坐标转换
 				// console.log(res1);
 				return res1;
 			},

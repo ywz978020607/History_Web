@@ -18,11 +18,17 @@
 			<div style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 		            <span v-html="'<br>'"></span><span v-html="'<br>'"></span>
 					<span style="white-space: pre-wrap;">
-						<div class="flex">
+						<!-- <div class="flex">
 							<button class="btn btn-primary" @click="seen_id=0;check_main(0);">远程物联</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 							<button  class="btn btn-primary" @click="seen_id=1;init_info();">修改信息</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 							<button  class="btn btn-primary" @click="seen_id=2;check_main(2);">WIFI-HID注入</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-						</div>
+						</div> -->
+						<select v-model = "seen_id" @change="change_seen_id(seen_id)">
+							<option value=0>远程物联</option>
+							<option value=1>修改信息</option>
+							<option value=2>广域HID</option>
+						</select>
+
 						</span>
 						<span v-html="'<br>'"></span>
 						<div v-if="seen_id==0" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
