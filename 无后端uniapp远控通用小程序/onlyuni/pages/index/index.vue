@@ -23,8 +23,8 @@
 							<button  class="btn btn-primary" @click="seen_id=1;init_info();">修改信息</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 							<button  class="btn btn-primary" @click="seen_id=2;check_main(2);">WIFI-HID注入</button> <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 						</div> -->
-						<picker v-model = "seen_id" @change="change_seen_id" :value="seen_id" :range="seen_id_tags">
-							<view>{{seen_id_tags[seen_id]}}</view>
+						<picker v-if="seen_id>=0" v-model = "seen_id" @change="change_seen_id" :value="seen_id" :range="seen_id_tags">
+							<view style="color: blue;">功能导航：{{seen_id_tags[seen_id]}}</view>
 						</picker>
 
 						</span>
@@ -34,7 +34,7 @@
 							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 								<p>备注: {{each["comments"]}} </p>
 								<p v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </p><p v-else-if="each.device_type != 3" style="">{{each["status"]}} </p>
-								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span></p>
 								<!-- 通用IO -->
 								<div v-if="each['device_type'] == 0">
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
@@ -97,12 +97,23 @@
 											<!-- <p>{{data_each.value.lon}},{{data_each.value.lat}}</p> -->
 											<map id="map" :longitude="data_each.value.lon" :latitude="data_each.value.lat" :scale="16" :circles="circles" 
 											:markers="[{
-											id: index,
+											id: data_index,
 											latitude: data_each.value.lat,longitude: data_each.value.lon,
 											width: 20,height: 30,
 											title: each.comments
-										}]" :polyline="polyline" style="width: 100%; height: 500rpx;"></map>
+										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
+										
+										<div class="flex" style="white-space: pre-wrap;">
+											<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
+											-
+											<uni-datetime-picker type="datetime" v-model="timeEnd" @change="changeTime($event, 'end')" />
+										</div>
+										<div class="flex" style="white-space: pre-wrap;">
+											<button class="btn btn-secondary" @click="create_path(key);">生成轨迹并查看</button>
+											<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+											<button class="btn btn-secondary" @click="open_location(data_each.value.lat, data_each.value.lon);">位置分享/导航</button>
+										</div>
 										</view>
 									</div>
 								</div>
@@ -167,6 +178,27 @@
 								<view class="divider" />
 								<!-- #endif -->
 
+							</div>
+						</div>
+
+
+<!-- ------------------------------------------------------------------------------- -->
+<!-- ------------------------------------------------------------------------------- -->
+						<!-- 独立页面-需返回按钮 -->
+						<div v-if="seen_id==-1" style="display: inline-block;">
+							<button class="btn btn-primary" @click="restore_seen_id();">返回原主页</button>
+							<span v-html="'<br>'"></span>
+							<map id="map" :longitude="polyline[0].points[0].lon" :latitude="polyline[0].points[0].lat" :circles="circles" 
+										:include-points="polyline[0].points" :polyline="polyline" style="width: 100%; height: 750rpx;"></map>
+							<div class="flex" style="white-space: pre-wrap;">
+								<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
+								-
+								<uni-datetime-picker type="datetime" v-model="timeEnd" @change="changeTime($event, 'end')" />
+							</div>
+							<div class="flex" style="white-space: pre-wrap;">
+								<button class="btn btn-secondary" @click="create_path();">生成轨迹并查看</button>
+								<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+								<button class="btn btn-secondary" @click="open_location();">终点位置导航</button>
 							</div>
 						</div>
 				</div>

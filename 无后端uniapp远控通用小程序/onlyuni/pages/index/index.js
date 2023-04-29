@@ -19,8 +19,22 @@ export default {
 			// canvasnamelist:["canvasGauge0","canvasGauge1"],
 			// username: "",
 			intervalId: null,
-			seen_id_tags: ["远程物联", "修改信息", "广域HID"],
+			seen_id_tags: ["远程物联", "修改信息", "广域HID"], // , "地图轨迹查询"
 			seen_id: 0,
+			// 地图轨迹
+			timeStart: '',
+			timeEnd: '',
+			polyline:[
+				{//指定一系列坐标点，从数组第一项连线至最后一项
+				points:[
+				],
+				color: "#31c27c",
+				width:10,//线的宽度
+				arrowLine: true,
+				// 　　　　dottedLine:true,//是否虚线
+				}
+			],
+			polykey: '',
 			//////////////
 			///画图变量
 			cWidth:'',
@@ -44,6 +58,8 @@ export default {
 		}
 	},
 	onLoad(options) {
+		this.timeStart = new Date((new Date().getTime() - 24*60*60*1000)).toISOString().split('.')[0];
+		this.timeEnd = new Date().toISOString().split('.')[0];
 		// console.log("Op:",options)
 		// if(options=={}){
 		// this.username="test";
@@ -51,11 +67,7 @@ export default {
 		// else{
 		// this.username = options.username;		
 		// }
-		if(uni.getStorageSync("seen_id")){
-			this.seen_id = uni.getStorageSync("seen_id");
-		} else{
-			this.seen_id = 0;
-		}
+		this.restore_seen_id();
 		console.log("seen_id:", this.seen_id);
 
 		//加载时先刷新一下
@@ -127,28 +139,36 @@ export default {
 			//操作--button1
 			change_seen_id(e){
 				this.seen_id = e.target.value;
-				uni.setStorageSync("seen_id", this.seen_id);
+				if(e.target.value>=0){
+					uni.setStorageSync("seen_id", this.seen_id);
+				}
+				// 主页刷新
 				switch(this.seen_id){
-					case 0:
+					case '0':
 						this.check_main(0);
 						break;
-					case 1:
+					case '1':
 						this.init_info();
 						break;
-					case 2:
+					case '2':
 						this.check_main(2);
 						break;
+					// case '3':
+					// 	this.debug();
+					// 	break;
+				}
+			},
+			restore_seen_id(e){
+				if(uni.getStorageSync("seen_id")){
+					this.seen_id = uni.getStorageSync("seen_id");
+				} else{
+					this.seen_id = 0;
 				}
 			},
 			check_main(seen_id = "") {
 				console.log("check once");
 				var that = this;
-				that.device_ids = uni.getStorageSync("device_ids");
-				that.api_key = uni.getStorageSync("api_key");
-				that.comments = uni.getStorageSync("comments");
-				that.trigger_time = uni.getStorageSync("trigger_time");
-				that.hid_usb = uni.getStorageSync("hid_usb");
-				that.device_type = uni.getStorageSync("device_type");
+				that.load_storage();
 				var device_id_split = that.device_ids.split(",");
 				var comments_split = that.comments.split(",");
 				var devices_type = that.device_type.split(",");
@@ -230,7 +250,6 @@ export default {
 											device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
 										}
 									}
-									
 									
 									temp_data[device_data["id"]]["datastreams"] = device_data["datastreams"];
 									
@@ -315,6 +334,16 @@ export default {
 					}
 				  });
 			},
+			// 加载缓存
+			load_storage(){
+				var that = this;
+				that.device_ids = uni.getStorageSync("device_ids");
+				that.api_key = uni.getStorageSync("api_key");
+				that.comments = uni.getStorageSync("comments");
+				that.trigger_time = uni.getStorageSync("trigger_time");
+				that.hid_usb = uni.getStorageSync("hid_usb");
+				that.device_type = uni.getStorageSync("device_type");
+			},
 			//修改信息
 			change() {
 				var that = this;
@@ -331,7 +360,9 @@ export default {
 					icon: "none"
 				})
 			},
+			// 加载缓存显示
 			init_info() {
+				this.load_storage();
 				var that = this;
 				that.input_val[0] = that.device_ids;
 				that.input_val[1] = that.comments;
@@ -340,6 +371,100 @@ export default {
 				that.input_val[4] = that.hid_usb;
 				that.input_val[7] = that.device_type;
 				that.$forceUpdate();
+			},
+			// 跳转三方app地图
+			open_location(latitude, longitude){
+				if(!latitude){
+					latitude = this.polyline[0].points[this.polyline[0].points.length-1].latitude;
+					longitude = this.polyline[0].points[this.polyline[0].points.length-1].longitude;
+				}
+				uni.openLocation({
+					latitude: latitude,
+					longitude: longitude,
+					scale: 15
+				});
+			},
+			// 修改时间
+			changeTime(e, mode){
+				console.log(e);
+				if(mode=="start"){
+					this.timeStart = e;
+				}
+				else{
+					this.timeEnd = e;
+				}
+			},
+			// 独立子页面 -1
+			create_path(device_id = ''){
+				console.log("地图轨迹绘制");
+				var that = this;
+				if(device_id){
+					that.polykey = device_id;
+				}
+				that.seen_id = -1;
+				uni.request({
+					url: that.direction + "/devices/" + that.polykey + "/datapoints",
+					header: { "api-key": that.api_key},
+					data: {
+						'datastream_id': 'location',
+						'start': that.timeStart.replace(" ", "T"),
+						'end': that.timeEnd.replace(" ", "T"),
+						'limit': 6000
+					},
+					method:'GET',//请求方式  或GET，必须为大写
+					success: res => {
+						// console.log('返回', res.data["data"]);
+						// 坐标转换
+						for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
+							var translate_coor = that.translate_gps(
+								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"], 
+								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]
+							);
+							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"] = translate_coor.latitude;
+							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"] = translate_coor.longitude;
+							// append
+							that.polyline[0].points.push({
+								latitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],
+								longitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]});
+						}
+						// console.log(that.polyline[0].points[that.polyline[0].points.length-1].latitude);
+						
+					}
+				});
+			},
+
+			debug(){
+				console.log("地图轨迹绘制");
+				var that = this;
+				var temp_data = {};
+				uni.request({
+					url: that.direction + "/devices/" + that.device_ids + "/datapoints",
+					header: { "api-key": that.api_key},
+					data: {
+						'datastream_id': 'location',
+						'start': 'T00:00:00',
+						'end': '2023-04-30T00:00:00',
+						'limit': 6000
+					},
+					method:'GET',//请求方式  或GET，必须为大写
+					success: res => {
+						// console.log('返回', res.data["data"]);
+						// 坐标转换
+						for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
+							var translate_coor = that.translate_gps(
+								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"], 
+								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]
+							);
+							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"] = translate_coor.latitude;
+							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"] = translate_coor.longitude;
+							// append
+							that.polyline[0].points.push({latitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],longitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]});
+						}
+						// temp_data["datastreams"] = res.data["data"]["datastreams"];
+						// console.log(temp_data);
+						
+					}
+				});
 			}
 	}
 
