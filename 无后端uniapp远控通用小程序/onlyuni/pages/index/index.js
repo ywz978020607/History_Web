@@ -423,6 +423,8 @@ export default {
 					that.polykey = device_id;
 				}
 				that.seen_id = -1;
+				that.polyline[0].points = [];
+				that.polyline[0].markers = [];
 				uni.request({
 					url: that.direction + "/devices/" + that.polykey + "/datapoints",
 					header: { "api-key": that.api_key},
