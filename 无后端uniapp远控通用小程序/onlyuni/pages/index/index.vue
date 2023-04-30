@@ -33,12 +33,13 @@
 							<hr style="width: 100%; size: 3em;" />
 							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;" @click="copy(key)">
 								<p>备注: {{each["comments"]}} </p>
-								<p v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </p><p v-else-if="each.device_type != 3" style="">{{each["status"]}} </p>
-								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span></p>
+								<div class="flex" style="white-space: pre-wrap;">
+									设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span> <span v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </span><span v-else-if="each.device_type != 3" style="">{{each["status"]}} </span>
+								</div>
 								<!-- 通用IO -->
 								<div v-if="each['device_type'] == 0">
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
-										<p>键值{{data_each["id"]}}: {{data_each["value"]}} <span v-html="'<br>'"></span> 更新时间: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
+										<p>键值{{data_each["id"]}}: {{data_each["value"]}} at: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										 <div class="flex" style="white-space: pre-wrap;">
 											 <button class="btn btn-primary" @click="send(key,data_each['id'], 'on')">常高</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
@@ -54,16 +55,15 @@
 								<!-- 剪裁版IO1 -->
 								<div v-if="each['device_type'] == 1">
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
-										<p>键值{{data_each["id"]}}: {{data_each["value"]}}
+										<p>键值{{data_each["id"]}}: {{data_each["value"]}} {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										<!-- <span v-html="'<br>'"></span>  -->
-										更新时间: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										<button class="btn btn-primary" @click="send(key,data_each['id'], 't_off')">触低发送</button>
 									</div>
 								</div>
 								<!-- 红外控制 -->
 								<div v-if="each['device_type'] == 2">
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
-										<p>键值{{data_each["id"]}}: {{data_each["value"]}} <span v-html="'<br>'"></span> 更新时间: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
+										<p>键值{{data_each["id"]}}: {{data_each["value"]}} at: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										 <div class="flex" style="white-space: pre-wrap;">
 											 <button class="btn btn-primary" @click="send(key,data_each['id'], 'on')">常高</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
@@ -192,11 +192,10 @@
 						</div>
 
 						<div v-if="seen_id==3" style="display: inline-block;">
-							<div style="display: flex;flex-direction: column;align-items: center;">
-							<text style="display: flex;flex-direction: column;align-items: center;">
+							<text>
 								小程序由摸鱼大鸽开发，用于广域网下的远程控制/定位追踪/红外控制/广域HID注入等功能，已部署案例：电脑远程开机、车库门控制、随车定位追踪、家居控制等。
 							</text>
-							</div>
+
 							<span v-html="'<br>'"></span>
 							<text class="flex flex-direction" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 								本小程序无三方后端，小程序直连中国移动onenet物联网平台(中国移动免费平台)，用户可自行注册绑定，教程可参考
