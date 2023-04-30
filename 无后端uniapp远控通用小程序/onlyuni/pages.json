@@ -3,7 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "摸鱼大鸽物联网"
+				"navigationBarTitleText": "摸鱼大鸽物联网",
+				"enablePullDownRefresh": true
 			}
 		}
 	],

@@ -127,7 +127,7 @@ export default {
 				this.intervalId = setInterval(() => {
 					// console.log("刷新 " + new Date());
 					this.fresh(); //加载数据函数
-				}, 25000);
+				}, 30000);
 			},
 			// 停止定时器
 			clear() {
@@ -145,9 +145,11 @@ export default {
 			/////////////////////////////////////
 			//操作--button1
 			change_seen_id(e){
-				this.seen_id = e.target.value;
-				if(e.target.value>=0){
-					uni.setStorageSync("seen_id", this.seen_id);
+				if(e){
+					this.seen_id = e.target.value;
+					if(e.target.value>=0){
+						uni.setStorageSync("seen_id", this.seen_id);
+					}
 				}
 				// 主页刷新
 				switch(this.seen_id){
