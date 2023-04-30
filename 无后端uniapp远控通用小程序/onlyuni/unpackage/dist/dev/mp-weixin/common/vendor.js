@@ -9664,6 +9664,7 @@ var _default = {
       polyline: [{
         //指定一系列坐标点，从数组第一项连线至最后一项
         points: [],
+        markers: [],
         color: "#31c27c",
         width: 10,
         //线的宽度
@@ -9702,8 +9703,8 @@ var _default = {
     console.log("seen_id:", this.seen_id);
 
     //加载时先刷新一下
-    // this.fresh();
-    this.check_main(this.seen_id);
+    this.fresh();
+    // this.check_main(this.seen_id);
 
     //定时器
     this.dataRefresh();
@@ -9717,8 +9718,8 @@ var _default = {
     // this.showLineA("canvasLineA",Data.LineA);
   },
   onShow: function onShow() {
-    this.timeStart = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString().split('.')[0];
-    this.timeEnd = new Date().toISOString().split('.')[0];
+    this.timeStart = new Date(new Date().getTime() - (24 - 8) * 60 * 60 * 1000).toISOString().split('.')[0];
+    this.timeEnd = new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().split('.')[0];
     console.log(this.timeEnd);
   },
   methods: {
@@ -9750,7 +9751,7 @@ var _default = {
       this.intervalId = setInterval(function () {
         // console.log("刷新 " + new Date());
         _this.fresh(); //加载数据函数
-      }, 3000);
+      }, 10000);
     },
     // 停止定时器
     clear: function clear() {
@@ -10099,6 +10100,43 @@ var _default = {
             });
           }
           // console.log(that.polyline[0].points[that.polyline[0].points.length-1].latitude);
+          that.polyline[0].markers.push({
+            id: 0,
+            latitude: res.data["data"]["datastreams"][0]["datapoints"][0]["value"]["lat"],
+            longitude: res.data["data"]["datastreams"][0]["datapoints"][0]["value"]["lon"],
+            width: 20,
+            height: 30,
+            callout: {
+              //气泡窗口 
+              content: res.data["data"]["datastreams"][0]["datapoints"][0]["at"].split('.')[0],
+              //文本
+              color: '#ffffff',
+              fontSize: 15,
+              borderRadius: 15,
+              padding: '10',
+              bgColor: '#406390',
+              display: 'ALWAYS' //常显
+            }
+          }, {
+            id: 1,
+            latitude: res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["value"]["lat"],
+            longitude: res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["value"]["lon"],
+            width: 20,
+            height: 30,
+            callout: {
+              //气泡窗口 
+              content: res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["at"].split('.')[0],
+              //文本
+              color: '#ffffff',
+              fontSize: 15,
+              borderRadius: 15,
+              padding: '10',
+              bgColor: '#406390',
+              display: 'ALWAYS' //常显
+            }
+          });
+
+          console.log(that.polyline[0].markers);
         }
       });
     },

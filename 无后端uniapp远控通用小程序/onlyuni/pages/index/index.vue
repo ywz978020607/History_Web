@@ -209,7 +209,7 @@
 							<button class="btn btn-primary" @click="restore_seen_id();">返回原主页</button>
 							<span v-html="'<br>'"></span>
 							<map id="map" :longitude="polyline[0].points[0].lon" :latitude="polyline[0].points[0].lat" :circles="circles" 
-										:include-points="polyline[0].points" :polyline="polyline" style="width: 100%; height: 750rpx;"></map>
+										:include-points="polyline[0].points" :polyline="polyline" :markers="polyline[0].markers" style="width: 100%; height: 750rpx;"></map>
 							<div class="flex" style="white-space: pre-wrap;">
 								<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
 								-
