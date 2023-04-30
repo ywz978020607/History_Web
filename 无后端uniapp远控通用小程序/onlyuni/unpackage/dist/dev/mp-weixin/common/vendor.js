@@ -768,7 +768,7 @@ function populateParameters(result) {
 
   var parameters = {
     appId: "__UNI__C996F37",
-    appName: "监控系统",
+    appName: "摸鱼大鸽物联网",
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
@@ -867,7 +867,7 @@ var getAppBaseInfo = {
     var hostLanguage = language.replace('_', '-');
     result = sortObject(Object.assign(result, {
       appId: "__UNI__C996F37",
-      appName: "监控系统",
+      appName: "摸鱼大鸽物联网",
       appVersion: "1.0.0",
       appVersionCode: "100",
       appLanguage: getAppLanguage(hostLanguage),
@@ -1524,7 +1524,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"监控系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8878,7 +8878,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"监控系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8899,14 +8899,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"监控系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"监控系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9002,7 +9002,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"监控系统","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9562,13 +9562,66 @@ function normalizeComponent (
 
 
 /***/ }),
-/* 33 */,
+/* 33 */
+/*!**************************************************************************************!*\
+  !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/static/share.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  data: function data() {
+    return {
+      //设置默认的分享参数
+      share: {
+        title: '摸鱼大鸽物联网小程序',
+        path: '/pages/index/index',
+        imageUrl: '',
+        desc: '',
+        content: ''
+      }
+    };
+  },
+  onShareAppMessage: function onShareAppMessage(res) {
+    return {
+      title: this.share.title,
+      path: this.share.path,
+      imageUrl: this.share.imageUrl,
+      desc: this.share.desc,
+      content: this.share.content,
+      success: function success(res) {
+        uni.showToast({
+          title: '分享成功'
+        });
+      },
+      fail: function fail(res) {
+        uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        });
+      }
+    };
+  },
+  onShareTimeline: function onShareTimeline() {}
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
 /* 34 */,
 /* 35 */,
 /* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */
+/* 39 */,
+/* 40 */
 /*!*******************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/pages/index/index.js ***!
   \*******************************************************************************************/
@@ -9593,6 +9646,7 @@ var _self;
 var _default = {
   data: function data() {
     return {
+      showPassword: true,
       device_ids: "",
       device_type: "",
       api_key: "",
@@ -9602,8 +9656,7 @@ var _default = {
       // canvasnamelist:["canvasGauge0","canvasGauge1"],
       // username: "",
       intervalId: null,
-      seen_id_tags: ["远程物联", "修改信息", "广域HID"],
-      // , "地图轨迹查询"
+      seen_id_tags: ["远程物联", "修改信息", "广域HID", "小程序介绍及联系方式"],
       seen_id: 0,
       // 地图轨迹
       timeStart: '',
@@ -9707,6 +9760,11 @@ var _default = {
       // 在页面销毁后，清除计时器
       this.clear();
     },
+    jump_link: function jump_link(url) {
+      uni.navigateTo({
+        url: url
+      });
+    },
     /////////////////////////////////////
     //操作--button1
     change_seen_id: function change_seen_id(e) {
@@ -9725,7 +9783,7 @@ var _default = {
         case '2':
           this.check_main(2);
           break;
-        // case '3':
+        // case 'x':
         // 	this.debug();
         // 	break;
       }
@@ -9870,7 +9928,7 @@ var _default = {
       });
     },
     translate_gps: function translate_gps(lat, lon) {
-      var util = __webpack_require__(/*! ../../static/WSCoordinate.js */ 40);
+      var util = __webpack_require__(/*! ../../static/WSCoordinate.js */ 41);
       var res1 = util.transformFromWGSToGCJ(lat, lon); // 坐标转换
       // console.log(res1);
       return res1;
@@ -9969,6 +10027,20 @@ var _default = {
       that.input_val[4] = that.hid_usb;
       that.input_val[7] = that.device_type;
       that.$forceUpdate();
+    },
+    // 复制id
+    copy: function copy(value) {
+      uni.setClipboardData({
+        data: value,
+        success: function success() {
+          //调用方法成功
+          // console.log('success');
+        }
+      });
+    },
+    // 密码显示
+    showPwd: function showPwd() {
+      this.showPassword = !this.showPassword;
     },
     // 跳转三方app地图
     open_location: function open_location(latitude, longitude) {
@@ -10071,7 +10143,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /*!*********************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/static/WSCoordinate.js ***!
   \*********************************************************************************************/
@@ -10225,69 +10297,14 @@ module.exports = {
 };
 
 /***/ }),
-/* 41 */,
 /* 42 */,
 /* 43 */,
 /* 44 */,
-/* 45 */
-/*!**************************************************************************************!*\
-  !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/static/share.js ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  data: function data() {
-    return {
-      //设置默认的分享参数
-      share: {
-        title: '摸鱼大鸽物联网小程序',
-        path: '/pages/index/index',
-        imageUrl: '',
-        desc: '',
-        content: ''
-      }
-    };
-  },
-  onShareAppMessage: function onShareAppMessage(res) {
-    return {
-      title: this.share.title,
-      path: this.share.path,
-      imageUrl: this.share.imageUrl,
-      desc: this.share.desc,
-      content: this.share.content,
-      success: function success(res) {
-        uni.showToast({
-          title: '分享成功'
-        });
-      },
-      fail: function fail(res) {
-        uni.showToast({
-          title: '分享失败',
-          icon: 'none'
-        });
-      }
-    };
-  },
-  onShareTimeline: function onShareTimeline() {}
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
+/* 45 */,
 /* 46 */,
 /* 47 */,
 /* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */
+/* 49 */
 /*!***************************************************************************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/uni_modules/uni-datetime-picker/components/uni-datetime-picker/i18n/index.js ***!
   \***************************************************************************************************************************************************/
@@ -10302,9 +10319,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 52));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 53));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 54));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 50));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 51));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 52));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -10313,7 +10330,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 52 */
+/* 50 */
 /*!**************************************************************************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/uni_modules/uni-datetime-picker/components/uni-datetime-picker/i18n/en.json ***!
   \**************************************************************************************************************************************************/
@@ -10323,7 +10340,7 @@ exports.default = _default;
 module.exports = JSON.parse("{\"uni-datetime-picker.selectDate\":\"select date\",\"uni-datetime-picker.selectTime\":\"select time\",\"uni-datetime-picker.selectDateTime\":\"select date and time\",\"uni-datetime-picker.startDate\":\"start date\",\"uni-datetime-picker.endDate\":\"end date\",\"uni-datetime-picker.startTime\":\"start time\",\"uni-datetime-picker.endTime\":\"end time\",\"uni-datetime-picker.ok\":\"ok\",\"uni-datetime-picker.clear\":\"clear\",\"uni-datetime-picker.cancel\":\"cancel\",\"uni-datetime-picker.year\":\"-\",\"uni-datetime-picker.month\":\"\",\"uni-calender.MON\":\"MON\",\"uni-calender.TUE\":\"TUE\",\"uni-calender.WED\":\"WED\",\"uni-calender.THU\":\"THU\",\"uni-calender.FRI\":\"FRI\",\"uni-calender.SAT\":\"SAT\",\"uni-calender.SUN\":\"SUN\",\"uni-calender.confirm\":\"confirm\"}");
 
 /***/ }),
-/* 53 */
+/* 51 */
 /*!*******************************************************************************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/uni_modules/uni-datetime-picker/components/uni-datetime-picker/i18n/zh-Hans.json ***!
   \*******************************************************************************************************************************************************/
@@ -10333,7 +10350,7 @@ module.exports = JSON.parse("{\"uni-datetime-picker.selectDate\":\"select date\"
 module.exports = JSON.parse("{\"uni-datetime-picker.selectDate\":\"选择日期\",\"uni-datetime-picker.selectTime\":\"选择时间\",\"uni-datetime-picker.selectDateTime\":\"选择日期时间\",\"uni-datetime-picker.startDate\":\"开始日期\",\"uni-datetime-picker.endDate\":\"结束日期\",\"uni-datetime-picker.startTime\":\"开始时间\",\"uni-datetime-picker.endTime\":\"结束时间\",\"uni-datetime-picker.ok\":\"确定\",\"uni-datetime-picker.clear\":\"清除\",\"uni-datetime-picker.cancel\":\"取消\",\"uni-datetime-picker.year\":\"年\",\"uni-datetime-picker.month\":\"月\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\",\"uni-calender.confirm\":\"确认\"}");
 
 /***/ }),
-/* 54 */
+/* 52 */
 /*!*******************************************************************************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/uni_modules/uni-datetime-picker/components/uni-datetime-picker/i18n/zh-Hant.json ***!
   \*******************************************************************************************************************************************************/
@@ -10343,7 +10360,7 @@ module.exports = JSON.parse("{\"uni-datetime-picker.selectDate\":\"选择日期\
 module.exports = JSON.parse("{\"uni-datetime-picker.selectDate\":\"選擇日期\",\"uni-datetime-picker.selectTime\":\"選擇時間\",\"uni-datetime-picker.selectDateTime\":\"選擇日期時間\",\"uni-datetime-picker.startDate\":\"開始日期\",\"uni-datetime-picker.endDate\":\"結束日期\",\"uni-datetime-picker.startTime\":\"開始时间\",\"uni-datetime-picker.endTime\":\"結束时间\",\"uni-datetime-picker.ok\":\"確定\",\"uni-datetime-picker.clear\":\"清除\",\"uni-datetime-picker.cancel\":\"取消\",\"uni-datetime-picker.year\":\"年\",\"uni-datetime-picker.month\":\"月\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\",\"uni-calender.confirm\":\"確認\"}");
 
 /***/ }),
-/* 55 */
+/* 53 */
 /*!*********************************************************************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/uni_modules/uni-datetime-picker/components/uni-datetime-picker/util.js ***!
   \*********************************************************************************************************************************************/
@@ -10788,14 +10805,14 @@ function fixIosDateFormat(value) {
 }
 
 /***/ }),
+/* 54 */,
+/* 55 */,
 /* 56 */,
 /* 57 */,
 /* 58 */,
 /* 59 */,
 /* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */
+/* 61 */
 /*!**************************************************************************************************************************!*\
   !*** D:/folder/History_modules/History_Web/无后端uniapp远控通用小程序/onlyuni/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************************************************/

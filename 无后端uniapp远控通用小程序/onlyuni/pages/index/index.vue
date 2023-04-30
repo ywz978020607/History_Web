@@ -31,7 +31,7 @@
 						<span v-html="'<br>'"></span>
 						<div v-if="seen_id==0" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 							<hr style="width: 100%; size: 3em;" />
-							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;" @click="copy(key)">
 								<p>备注: {{each["comments"]}} </p>
 								<p v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </p><p v-else-if="each.device_type != 3" style="">{{each["status"]}} </p>
 								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span></p>
@@ -129,17 +129,17 @@
 						</div>
 		
 						<div v-if="seen_id==1" style="display: inline-block;">
-							<label style="float:left">设备产品ID(英文逗号分割)：</label> <input v-model="input_val[0]" style="border:0.5px solid #378888; white-space: pre-wrap;">
+							<label style="float:left">设备ID(英文逗号分割)：</label> <input v-model="input_val[0]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<!-- <a :href="device_ids">{{device_ids}}</a> --><span v-html="'<br>'"></span>
 							<label style="float:left">备注(英文逗号分割)：</label> <input v-model="input_val[1]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<!-- <a :href="comments">{{comments}}</a> --><span v-html="'<br>'"></span>
-							<label style="float:left">唯一密钥：</label> <input v-model="input_val[2]" style="border:0.5px solid #378888; white-space: pre-wrap;">
+							<label style="float:left" @click="showPwd">唯一密钥(点击显示)：</label> <input v-model="input_val[2]" :password="showPassword" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<!-- <a :href="api_key">{{api_key}}</a> --><span v-html="'<br>'"></span>
 							<label style="float:left">触发秒数/s：</label> <input v-model="input_val[3]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							
 							<label style="float:left">hidusb-ID：</label> <input v-model="input_val[4]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							
-							<label style="float:left">类型(0-完整, 1仅触低按键, 英文逗号分割)：</label> 
+							<label style="float:left">类型(0/1/2/3/.., 英文逗号分割)：</label> 
 							<span v-html="'<br>'"></span>
 							<input v-model="input_val[7]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<!-- {{trigger_time}} -->
@@ -150,7 +150,7 @@
 						<div v-if="seen_id==2" style="display: inline-block;">
 							<div v-for="(each,key,index) in temp_data" style="display: flex;flex-direction: column;align-items: center;">
 								<p v-if="each['status']=='在线'" style="color: red;">{{each["status"]}} </p><p v-else style="">{{each["status"]}} </p>
-								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span></p>
 								<div class="flex" style="white-space: pre-wrap;">
 									 <button class="btn btn-primary" @click="send_usb('mkl')" style="display: flex;flex-direction: column;align-items: center;">鼠标左键</button>
 									 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
@@ -181,6 +181,26 @@
 							</div>
 						</div>
 
+						<div v-if="seen_id==3" style="display: inline-block;">
+							<div style="display: flex;flex-direction: column;align-items: center;">
+							<text style="display: flex;flex-direction: column;align-items: center;">
+								小程序由摸鱼大鸽开发，用于广域网下的远程控制/定位追踪/红外控制/广域HID注入等功能，已部署案例：电脑远程开机、车库门控制、随车定位追踪、家居控制等。
+							</text>
+							</div>
+							<span v-html="'<br>'"></span>
+							<text class="flex flex-direction" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+								本小程序无三方后端，小程序直连中国移动onenet物联网平台(中国移动免费平台)，用户可自行注册绑定，教程可参考
+								https://www.bilibili.com/read/cv22804787
+							</text>
+							<span v-html="'<br>'"></span>
+							<text class="flex flex-direction" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+								联系方式: 可通过bilibili平台关注[摸鱼大鸽]，也可添加开发者微信号: moyudage123 联系定制、邀请进交流群等。
+							</text>
+							<span v-html="'<br>'"></span>
+							<text class="flex flex-direction" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+								暂不接受捐赠，您的bilibili点赞/关注是作者开发的动力~
+							</text>
+						</div>
 
 <!-- ------------------------------------------------------------------------------- -->
 <!-- ------------------------------------------------------------------------------- -->

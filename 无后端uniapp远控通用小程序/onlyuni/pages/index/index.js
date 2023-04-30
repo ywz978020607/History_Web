@@ -10,6 +10,7 @@ var _self;
 export default {
 	data() {
 		return {
+			showPassword: true,
 			device_ids: "",
 			device_type: "",
 			api_key: "",
@@ -19,7 +20,7 @@ export default {
 			// canvasnamelist:["canvasGauge0","canvasGauge1"],
 			// username: "",
 			intervalId: null,
-			seen_id_tags: ["远程物联", "修改信息", "广域HID"], // , "地图轨迹查询"
+			seen_id_tags: ["远程物联", "修改信息", "广域HID", "小程序介绍及联系方式"],
 			seen_id: 0,
 			// 地图轨迹
 			timeStart: '',
@@ -135,6 +136,11 @@ export default {
 				// 在页面销毁后，清除计时器
 				this.clear();
 			},
+			jump_link(url){
+				uni.navigateTo({
+					url: url
+				})
+			},
 			/////////////////////////////////////
 			//操作--button1
 			change_seen_id(e){
@@ -153,7 +159,7 @@ export default {
 					case '2':
 						this.check_main(2);
 						break;
-					// case '3':
+					// case 'x':
 					// 	this.debug();
 					// 	break;
 				}
@@ -371,6 +377,20 @@ export default {
 				that.input_val[4] = that.hid_usb;
 				that.input_val[7] = that.device_type;
 				that.$forceUpdate();
+			},
+			// 复制id
+			copy(value){
+				uni.setClipboardData({
+					data: value,
+					success: function () {
+					//调用方法成功
+					// console.log('success');
+				}
+				})
+			},
+			// 密码显示
+			showPwd: function() {
+				this.showPassword = !this.showPassword;
 			},
 			// 跳转三方app地图
 			open_location(latitude, longitude){
