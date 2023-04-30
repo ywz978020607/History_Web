@@ -15,7 +15,7 @@
 	            </div>
 	        </header>
 	        <!-- body-block  -->
-			<div style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+			<div style="width: 100%; display: flex;flex-direction: column;align-items: center; background-color: #FFF2E2;">
 		            <span v-html="'<br>'"></span>
 					<span style="white-space: pre-wrap;">
 						<picker v-if="seen_id>=0" v-model = "seen_id" @change="change_seen_id" :value="seen_id" :range="seen_id_tags">
