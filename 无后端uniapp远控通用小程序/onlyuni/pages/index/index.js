@@ -46,6 +46,7 @@ export default {
 			all_count: null,
 			charts_len: 7,
 			//
+			info_dump: '',
 			input_val: [null, null, null, null, null, null, 5, null], //初始化, null可缺省
 			// 0-产品ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
 			// 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型]，
@@ -484,40 +485,47 @@ export default {
 					}
 				});
 			},
+			// 配置导出和导入
+			export_info(){
+				this.info_dump = (JSON.stringify(this.input_val));
+			},
+			load_info(){
+				this.input_val = (JSON.parse(this.info_dump));
+			},
 
-			debug(){
-				console.log("地图轨迹绘制");
-				var that = this;
-				var temp_data = {};
-				uni.request({
-					url: that.direction + "/devices/" + that.device_ids + "/datapoints",
-					header: { "api-key": that.api_key},
-					data: {
-						'datastream_id': 'location',
-						'start': 'T00:00:00',
-						'end': '2023-04-30T00:00:00',
-						'limit': 6000
-					},
-					method:'GET',//请求方式  或GET，必须为大写
-					success: res => {
-						// console.log('返回', res.data["data"]);
-						// 坐标转换
-						for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
-							var translate_coor = that.translate_gps(
-								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"], 
-								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]
-							);
-							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"] = translate_coor.latitude;
-							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"] = translate_coor.longitude;
-							// append
-							that.polyline[0].points.push({latitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],longitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]});
-						}
-						// temp_data["datastreams"] = res.data["data"]["datastreams"];
-						// console.log(temp_data);
+			// debug(){
+			// 	console.log("地图轨迹绘制");
+			// 	var that = this;
+			// 	var temp_data = {};
+			// 	uni.request({
+			// 		url: that.direction + "/devices/" + that.device_ids + "/datapoints",
+			// 		header: { "api-key": that.api_key},
+			// 		data: {
+			// 			'datastream_id': 'location',
+			// 			'start': 'T00:00:00',
+			// 			'end': '2023-04-30T00:00:00',
+			// 			'limit': 6000
+			// 		},
+			// 		method:'GET',//请求方式  或GET，必须为大写
+			// 		success: res => {
+			// 			// console.log('返回', res.data["data"]);
+			// 			// 坐标转换
+			// 			for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
+			// 				var translate_coor = that.translate_gps(
+			// 					res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"], 
+			// 					res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]
+			// 				);
+			// 				res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"] = translate_coor.latitude;
+			// 				res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"] = translate_coor.longitude;
+			// 				// append
+			// 				that.polyline[0].points.push({latitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],longitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]});
+			// 			}
+			// 			// temp_data["datastreams"] = res.data["data"]["datastreams"];
+			// 			// console.log(temp_data);
 						
-					}
-				});
-			}
+			// 		}
+			// 	});
+			// }
 	}
 
 }

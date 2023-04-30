@@ -136,15 +136,23 @@
 							<label style="float:left" @click="showPwd">唯一密钥(点击显示)：</label> <input v-model="input_val[2]" :password="showPassword" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<!-- <a :href="api_key">{{api_key}}</a> --><span v-html="'<br>'"></span>
 							<label style="float:left">触发秒数/s：</label> <input v-model="input_val[3]" style="border:0.5px solid #378888; white-space: pre-wrap;">
-							
+							<span v-html="'<br>'"></span>
 							<label style="float:left">hidusb-ID：</label> <input v-model="input_val[4]" style="border:0.5px solid #378888; white-space: pre-wrap;">
-							
+							<span v-html="'<br>'"></span>
 							<label style="float:left">类型(0/1/2/3/.., 英文逗号分割)：</label> 
 							<span v-html="'<br>'"></span>
 							<input v-model="input_val[7]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<!-- {{trigger_time}} -->
 							<span v-html="'<br>'"></span>
 							<button class="btn btn-primary" @click="change()" style="display: flex;flex-direction: column;align-items: center;">新增/修改onenet配置</button>
+
+							<span v-html="'<br>'"></span><span v-html="'<br>'"></span>
+							<div class="flex" style="white-space: pre-wrap;">
+								<button class="btn btn-secondary" @click="export_info();">一键导出配置</button>
+								<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+								<button class="btn btn-secondary" @click="load_info();">一键导入配置</button>
+							</div>
+							<input v-model="info_dump" style="border:0.5px solid #378888; white-space: pre-wrap;">
 						</div>
 						
 						<div v-if="seen_id==2" style="display: inline-block;">
