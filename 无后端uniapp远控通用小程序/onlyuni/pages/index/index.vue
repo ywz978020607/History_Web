@@ -31,9 +31,9 @@
 						<span v-html="'<br>'"></span>
 						<div v-if="seen_id==0" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 							<hr style="width: 100%; size: 3em;" />
-							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;" @click="copy(key)">
+							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 								<p>备注: {{each["comments"]}} </p>
-								<div class="flex" style="white-space: pre-wrap;">
+								<div class="flex" style="white-space: pre-wrap;" @click="copy(key)">
 									设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span> <span v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </span><span v-else-if="each.device_type != 3" style="">{{each["status"]}} </span>
 								</div>
 								<!-- 通用IO -->

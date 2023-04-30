@@ -127,7 +127,7 @@ export default {
 				this.intervalId = setInterval(() => {
 					// console.log("刷新 " + new Date());
 					this.fresh(); //加载数据函数
-				}, 10000);
+				}, 25000);
 			},
 			// 停止定时器
 			clear() {
