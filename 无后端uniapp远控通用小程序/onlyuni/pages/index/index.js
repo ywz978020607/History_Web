@@ -174,6 +174,13 @@ export default {
 					this.seen_id = 0;
 				}
 			},
+			onPullDownRefresh () {
+				console.log('触发下拉刷新了');
+				if(this.seen_id==0){
+					this.check_main(0);
+				}
+				uni.stopPullDownRefresh();
+			},
 			check_main(seen_id = "") {
 				console.log("check once");
 				var that = this;
