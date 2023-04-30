@@ -1524,7 +1524,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8878,7 +8878,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8899,14 +8899,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9002,7 +9002,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9691,8 +9691,6 @@ var _default = {
     };
   },
   onLoad: function onLoad(options) {
-    this.timeStart = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString().split('.')[0];
-    this.timeEnd = new Date().toISOString().split('.')[0];
     // console.log("Op:",options)
     // if(options=={}){
     // this.username="test";
@@ -9716,10 +9714,13 @@ var _default = {
     this.cHeight = uni.upx2px(500);
   },
   onReady: function onReady() {
-    ;
     // this.showLineA("canvasLineA",Data.LineA);
   },
-
+  onShow: function onShow() {
+    this.timeStart = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString().split('.')[0];
+    this.timeEnd = new Date().toISOString().split('.')[0];
+    console.log(this.timeEnd);
+  },
   methods: {
     //////////////////////////////////
     quit: function quit(event) {
@@ -9733,19 +9734,23 @@ var _default = {
     // },
     fresh: function fresh() {
       console.log("fresh");
-      this.check_main(this.seen_id);
+      // 仅主页刷新
+      if (this.seen_id == 0) {
+        this.check_main(0);
+      }
     },
     // 定时刷新数据函数
     dataRefresh: function dataRefresh() {
+      var _this = this;
       // 计时器正在进行中，退出函数
       if (this.intervalId != null) {
         return;
       }
       // 计时器为空，操作
       this.intervalId = setInterval(function () {
-        console.log("刷新 " + new Date());
-        // this.fresh(); //加载数据函数
-      }, 10000);
+        // console.log("刷新 " + new Date());
+        _this.fresh(); //加载数据函数
+      }, 3000);
     },
     // 停止定时器
     clear: function clear() {
@@ -9759,11 +9764,6 @@ var _default = {
     destroyed: function destroyed() {
       // 在页面销毁后，清除计时器
       this.clear();
-    },
-    jump_link: function jump_link(url) {
-      uni.navigateTo({
-        url: url
-      });
     },
     /////////////////////////////////////
     //操作--button1

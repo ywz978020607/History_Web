@@ -59,8 +59,6 @@ export default {
 		}
 	},
 	onLoad(options) {
-		this.timeStart = new Date((new Date().getTime() - 24*60*60*1000)).toISOString().split('.')[0];
-		this.timeEnd = new Date().toISOString().split('.')[0];
 		// console.log("Op:",options)
 		// if(options=={}){
 		// this.username="test";
@@ -95,9 +93,13 @@ export default {
 		this.cHeight=uni.upx2px(500);
 	},
 	onReady() {
-		;
 		// this.showLineA("canvasLineA",Data.LineA);
 			},
+	onShow(){
+		this.timeStart = new Date((new Date().getTime() - 24*60*60*1000)).toISOString().split('.')[0];
+		this.timeEnd = new Date().toISOString().split('.')[0];
+		console.log(this.timeEnd);
+	},
 	methods: {
 		//////////////////////////////////
 			quit(event) {
@@ -109,7 +111,10 @@ export default {
 			// },
 			fresh() {
 				console.log("fresh")
-				this.check_main(this.seen_id);
+				// 仅主页刷新
+				if(this.seen_id == 0){
+					this.check_main(0);
+				}
 			},
 			// 定时刷新数据函数
 			dataRefresh() {
@@ -119,9 +124,9 @@ export default {
 				}
 				// 计时器为空，操作
 				this.intervalId = setInterval(() => {
-					console.log("刷新 " + new Date());
-					// this.fresh(); //加载数据函数
-				}, 10000);
+					// console.log("刷新 " + new Date());
+					this.fresh(); //加载数据函数
+				}, 3000);
 			},
 			// 停止定时器
 			clear() {
@@ -135,11 +140,6 @@ export default {
 			destroyed() {
 				// 在页面销毁后，清除计时器
 				this.clear();
-			},
-			jump_link(url){
-				uni.navigateTo({
-					url: url
-				})
 			},
 			/////////////////////////////////////
 			//操作--button1
