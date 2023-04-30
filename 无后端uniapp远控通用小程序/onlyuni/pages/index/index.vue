@@ -16,13 +16,13 @@
 	        </header>
 	        <!-- body-block  -->
 			<div style="width: 100%; display: flex;flex-direction: column;align-items: center;">
-		            <span v-html="'<br>'"></span><span v-html="'<br>'"></span>
+		            <span v-html="'<br>'"></span>
 					<span style="white-space: pre-wrap;">
 						<picker v-if="seen_id>=0" v-model = "seen_id" @change="change_seen_id" :value="seen_id" :range="seen_id_tags">
 							<view style="color: blue;">功能导航：{{seen_id_tags[seen_id]}}</view>
 						</picker>
+					</span>
 
-						</span>
 						<span v-html="'<br>'"></span>
 						<div v-if="seen_id==0" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 							<hr style="width: 100%; size: 3em;" />
@@ -194,7 +194,7 @@
 							<span v-html="'<br>'"></span>
 							<text class="flex flex-direction" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 								本小程序无三方后端，小程序直连中国移动onenet物联网平台(中国移动免费平台)，用户可自行注册绑定，教程可参考
-								https://www.bilibili.com/read/cv22804787
+								https://www.bilibili.com/read/cv22804787 ，所有数据保存在小程序本地缓存中，若有备份需要可以一键导出/导入，小程序支持下拉刷新和定时刷新。
 							</text>
 							<span v-html="'<br>'"></span>
 							<text class="flex flex-direction" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
