@@ -75,7 +75,7 @@ export default {
 		// this.check_main(this.seen_id);
 		
 		//定时器
-		this.dataRefresh();
+		// this.dataRefresh();
 		
 		//画布
 		_self = this;
@@ -112,10 +112,7 @@ export default {
 			// },
 			fresh() {
 				console.log("fresh")
-				// 仅主页刷新
-				if(this.seen_id == 0){
-					this.check_main(0);
-				}
+				this.change_seen_id(this.seen_id);
 			},
 			// 定时刷新数据函数
 			dataRefresh() {
@@ -144,10 +141,14 @@ export default {
 			},
 			/////////////////////////////////////
 			//操作--button1
-			change_seen_id(e){
-				if(e){
-					this.seen_id = e.target.value;
-					if(e.target.value>=0){
+			change_seen_id(new_seen_id){
+				// console.log(new_seen_id);
+				var changed = false;
+				if(new_seen_id != this.seen_id)
+				{
+					changed = true;
+					this.seen_id = new_seen_id;
+					if(new_seen_id>=0){
 						uni.setStorageSync("seen_id", this.seen_id);
 					}
 				}
@@ -157,7 +158,7 @@ export default {
 						this.check_main(0);
 						break;
 					case '1':
-						this.init_info();
+						if(changed){this.init_info();}
 						break;
 					case '2':
 						this.check_main(2);
@@ -176,9 +177,7 @@ export default {
 			},
 			onPullDownRefresh () {
 				console.log('触发下拉刷新了');
-				if(this.seen_id==0){
-					this.check_main(0);
-				}
+				this.fresh();
 				uni.stopPullDownRefresh();
 			},
 			check_main(seen_id = "") {
@@ -195,7 +194,7 @@ export default {
 					// WIFI-HID类型只查询在线状态
 					if (seen_id == 2){
 						for(var idx=0;idx<hid_usb_split.length;idx++){
-							temp_data[hid_usb_split[idx]] = {
+							temp_data["+"+hid_usb_split[idx]] = {
 								"status": "在线",
 								"datastreams": [],
 							}
@@ -211,7 +210,7 @@ export default {
 								for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
 									var device_data = res.data["data"]["devices"][idx];
 									if (device_data["online"] == false){
-										temp_data[device_data["id"]]["status"] = "离线";
+										temp_data["+"+device_data["id"]]["status"] = "离线";
 									}
 								}
 							}
@@ -220,7 +219,7 @@ export default {
 					else {
 						// 首页
 						for(var idx=0;idx<device_id_split.length;idx++){
-							temp_data[device_id_split[idx]] = {
+							temp_data["+"+device_id_split[idx]] = {
 								"device_type": devices_type[idx],
 								"comments": comments_split[idx],
 								"status": "在线",
@@ -239,7 +238,7 @@ export default {
 								for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
 									var device_data = res.data["data"]["devices"][idx];
 									if (device_data["online"] == false){
-										temp_data[device_data["id"]]["status"] = "离线";
+										temp_data["+"+device_data["id"]]["status"] = "离线";
 									}
 								}
 							}
@@ -266,14 +265,13 @@ export default {
 											device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
 										}
 									}
-									
-									temp_data[device_data["id"]]["datastreams"] = device_data["datastreams"];
-									
+									temp_data["+"+device_data["id"]]["datastreams"] = device_data["datastreams"];
 								}
 							}
 						});
 						
 					}
+					
 					that.temp_data = temp_data;
 				}catch(e){
 					console.log("check main error", e);
@@ -426,12 +424,10 @@ export default {
 			},
 			// 独立子页面 -1
 			create_path(device_id = ''){
-				console.log("地图轨迹绘制");
 				var that = this;
-				if(device_id){
-					that.polykey = device_id;
-				}
 				that.seen_id = -1;
+				console.log("地图轨迹绘制");
+				if(device_id){that.polykey = device_id;}
 				that.polyline[0].points = [];
 				that.polyline[0].markers = [];
 				uni.request({
@@ -531,7 +527,7 @@ export default {
 			// 				// append
 			// 				that.polyline[0].points.push({latitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],longitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]});
 			// 			}
-			// 			// temp_data["datastreams"] = res.data["data"]["datastreams"];
+			// 			// temp_data["+"+"datastreams"] = res.data["data"]["datastreams"];
 			// 			// console.log(temp_data);
 						
 			// 		}

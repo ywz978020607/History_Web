@@ -125,20 +125,30 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var l3 =
+  var l4 =
     _vm.seen_id == 0
       ? _vm.__map(_vm.temp_data, function (each, key) {
           var $orig = _vm.__get_orig(each)
+          var g0 = key.substr(1)
+          var g1 = key.substr(1)
           var l0 =
             each["device_type"] == 0
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g0 = data_each["at"].slice(0, 10)
-                  var g1 = data_each["at"].slice(11, 19)
+                  var g2 = data_each["at"].slice(0, 10)
+                  var g3 = data_each["at"].slice(11, 19)
+                  var g4 = key.substr(1)
+                  var g5 = key.substr(1)
+                  var g6 = key.substr(1)
+                  var g7 = key.substr(1)
                   return {
                     $orig: $orig,
-                    g0: g0,
-                    g1: g1,
+                    g2: g2,
+                    g3: g3,
+                    g4: g4,
+                    g5: g5,
+                    g6: g6,
+                    g7: g7,
                   }
                 })
               : null
@@ -146,12 +156,14 @@ var render = function () {
             each["device_type"] == 1
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g2 = data_each["at"].slice(0, 10)
-                  var g3 = data_each["at"].slice(11, 19)
+                  var g8 = data_each["at"].slice(0, 10)
+                  var g9 = data_each["at"].slice(11, 19)
+                  var g10 = key.substr(1)
                   return {
                     $orig: $orig,
-                    g2: g2,
-                    g3: g3,
+                    g8: g8,
+                    g9: g9,
+                    g10: g10,
                   }
                 })
               : null
@@ -159,20 +171,63 @@ var render = function () {
             each["device_type"] == 2
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g4 = data_each["at"].slice(0, 10)
-                  var g5 = data_each["at"].slice(11, 19)
+                  var g11 = data_each["at"].slice(0, 10)
+                  var g12 = data_each["at"].slice(11, 19)
+                  var g13 = key.substr(1)
+                  var g14 = key.substr(1)
+                  var g15 = key.substr(1)
+                  var g16 = key.substr(1)
                   return {
                     $orig: $orig,
-                    g4: g4,
-                    g5: g5,
+                    g11: g11,
+                    g12: g12,
+                    g13: g13,
+                    g14: g14,
+                    g15: g15,
+                    g16: g16,
+                  }
+                })
+              : null
+          var g17 = each["device_type"] == 2 ? key.substr(1) : null
+          var g18 = each["device_type"] == 2 ? key.substr(1) : null
+          var g19 = each["device_type"] == 2 ? key.substr(1) : null
+          var g20 = each["device_type"] == 2 ? key.substr(1) : null
+          var l3 =
+            each["device_type"] == 3
+              ? _vm.__map(each.datastreams, function (data_each, data_key) {
+                  var $orig = _vm.__get_orig(data_each)
+                  var g21 = data_each.id == "location" ? key.substr(1) : null
+                  return {
+                    $orig: $orig,
+                    g21: g21,
                   }
                 })
               : null
           return {
             $orig: $orig,
+            g0: g0,
+            g1: g1,
             l0: l0,
             l1: l1,
             l2: l2,
+            g17: g17,
+            g18: g18,
+            g19: g19,
+            g20: g20,
+            l3: l3,
+          }
+        })
+      : null
+  var l5 =
+    _vm.seen_id == 2
+      ? _vm.__map(_vm.temp_data, function (each, key) {
+          var $orig = _vm.__get_orig(each)
+          var g22 = key.substr(1)
+          var g23 = key.substr(1)
+          return {
+            $orig: $orig,
+            g22: g22,
+            g23: g23,
           }
         })
       : null
@@ -180,7 +235,8 @@ var render = function () {
     {},
     {
       $root: {
-        l3: l3,
+        l4: l4,
+        l5: l5,
       },
     }
   )
@@ -225,6 +281,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _index = _interopRequireDefault(__webpack_require__(/*! ./index.js */ 40));
+//
 //
 //
 //

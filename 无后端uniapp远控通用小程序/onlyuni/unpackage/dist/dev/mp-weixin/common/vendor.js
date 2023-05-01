@@ -1524,7 +1524,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8878,7 +8878,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8899,14 +8899,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9002,7 +9002,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9708,7 +9708,7 @@ var _default = {
     // this.check_main(this.seen_id);
 
     //定时器
-    this.dataRefresh();
+    // this.dataRefresh();
 
     //画布
     _self = this;
@@ -9736,10 +9736,7 @@ var _default = {
     // },
     fresh: function fresh() {
       console.log("fresh");
-      // 仅主页刷新
-      if (this.seen_id == 0) {
-        this.check_main(0);
-      }
+      this.change_seen_id(this.seen_id);
     },
     // 定时刷新数据函数
     dataRefresh: function dataRefresh() {
@@ -9769,10 +9766,13 @@ var _default = {
     },
     /////////////////////////////////////
     //操作--button1
-    change_seen_id: function change_seen_id(e) {
-      if (e) {
-        this.seen_id = e.target.value;
-        if (e.target.value >= 0) {
+    change_seen_id: function change_seen_id(new_seen_id) {
+      // console.log(new_seen_id);
+      var changed = false;
+      if (new_seen_id != this.seen_id) {
+        changed = true;
+        this.seen_id = new_seen_id;
+        if (new_seen_id >= 0) {
           uni.setStorageSync("seen_id", this.seen_id);
         }
       }
@@ -9782,7 +9782,9 @@ var _default = {
           this.check_main(0);
           break;
         case '1':
-          this.init_info();
+          if (changed) {
+            this.init_info();
+          }
           break;
         case '2':
           this.check_main(2);
@@ -9801,9 +9803,7 @@ var _default = {
     },
     onPullDownRefresh: function onPullDownRefresh() {
       console.log('触发下拉刷新了');
-      if (this.seen_id == 0) {
-        this.check_main(0);
-      }
+      this.fresh();
       uni.stopPullDownRefresh();
     },
     check_main: function check_main() {
@@ -9820,7 +9820,7 @@ var _default = {
         // WIFI-HID类型只查询在线状态
         if (seen_id == 2) {
           for (var idx = 0; idx < hid_usb_split.length; idx++) {
-            temp_data[hid_usb_split[idx]] = {
+            temp_data["+" + hid_usb_split[idx]] = {
               "status": "在线",
               "datastreams": []
             };
@@ -9841,7 +9841,7 @@ var _default = {
               for (var idx = 0; idx < res.data["data"]["devices"].length; idx++) {
                 var device_data = res.data["data"]["devices"][idx];
                 if (device_data["online"] == false) {
-                  temp_data[device_data["id"]]["status"] = "离线";
+                  temp_data["+" + device_data["id"]]["status"] = "离线";
                 }
               }
             }
@@ -9849,7 +9849,7 @@ var _default = {
         } else {
           // 首页
           for (var idx = 0; idx < device_id_split.length; idx++) {
-            temp_data[device_id_split[idx]] = {
+            temp_data["+" + device_id_split[idx]] = {
               "device_type": devices_type[idx],
               "comments": comments_split[idx],
               "status": "在线",
@@ -9873,7 +9873,7 @@ var _default = {
               for (var idx = 0; idx < res.data["data"]["devices"].length; idx++) {
                 var device_data = res.data["data"]["devices"][idx];
                 if (device_data["online"] == false) {
-                  temp_data[device_data["id"]]["status"] = "离线";
+                  temp_data["+" + device_data["id"]]["status"] = "离线";
                 }
               }
             }
@@ -9905,7 +9905,7 @@ var _default = {
                     device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
                   }
                 }
-                temp_data[device_data["id"]]["datastreams"] = device_data["datastreams"];
+                temp_data["+" + device_data["id"]]["datastreams"] = device_data["datastreams"];
               }
             }
           });
@@ -10077,12 +10077,12 @@ var _default = {
     // 独立子页面 -1
     create_path: function create_path() {
       var device_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-      console.log("地图轨迹绘制");
       var that = this;
+      that.seen_id = -1;
+      console.log("地图轨迹绘制");
       if (device_id) {
         that.polykey = device_id;
       }
-      that.seen_id = -1;
       that.polyline[0].points = [];
       that.polyline[0].markers = [];
       uni.request({
@@ -10185,7 +10185,7 @@ var _default = {
     // 				// append
     // 				that.polyline[0].points.push({latitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],longitude: res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]});
     // 			}
-    // 			// temp_data["datastreams"] = res.data["data"]["datastreams"];
+    // 			// temp_data["+"+"datastreams"] = res.data["data"]["datastreams"];
     // 			// console.log(temp_data);
     // 		}
     // 	});

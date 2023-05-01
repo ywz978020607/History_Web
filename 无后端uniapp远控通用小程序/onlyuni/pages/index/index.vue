@@ -15,10 +15,10 @@
 	            </div>
 	        </header>
 	        <!-- body-block  -->
-			<div style="width: 100%; display: flex;flex-direction: column;align-items: center; background-color: #f8f8f8;">
+			<div style="width: 100%; display: flex;flex-direction: column;align-items: center; background-color: #F2F1ED;">
 		            <span v-html="'<br>'"></span>
 					<span style="white-space: pre-wrap;">
-						<picker v-if="seen_id>=0" v-model = "seen_id" @change="change_seen_id" :value="seen_id" :range="seen_id_tags">
+						<picker v-if="seen_id>=0" v-model = "seen_id" @change="change_seen_id($event.target.value)" :value="seen_id" :range="seen_id_tags">
 							<view style="color: blue;">功能导航：{{seen_id_tags[seen_id]}}</view>
 						</picker>
 					</span>
@@ -28,21 +28,21 @@
 							<hr style="width: 100%; size: 3em;" />
 							<div v-for="(each,key,index) in temp_data" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 								<p>备注: {{each["comments"]}} </p>
-								<div class="flex" style="white-space: pre-wrap;" @click="copy(key)">
-									设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span> <span v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </span><span v-else-if="each.device_type != 3" style="">{{each["status"]}} </span>
+								<div class="flex" style="white-space: pre-wrap;" @click="copy(key.substr(1,))">
+									设备号: {{key.substr(1,)}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span> <span v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </span><span v-else-if="each.device_type != 3" style="">{{each["status"]}} </span>
 								</div>
 								<!-- 通用IO -->
 								<div v-if="each['device_type'] == 0">
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
 										<p>键值{{data_each["id"]}}: {{data_each["value"]}} at: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										 <div class="flex" style="white-space: pre-wrap;">
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 'on')">常高</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'on')">常高</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 'off')">常低</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'off')">常低</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 't_on')">触高</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_on')">触高</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 't_off')">触低</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_off')">触低</button>
 										 </div>
 										 <!-- <span v-html="'<br>'"></span> -->
 									</div>
@@ -52,7 +52,7 @@
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
 										<p>键值{{data_each["id"]}}: {{data_each["value"]}} {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										<!-- <span v-html="'<br>'"></span>  -->
-										<button class="btn btn-primary" @click="send(key,data_each['id'], 't_off')">触低发送</button>
+										<button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_off')">触低发送</button>
 									</div>
 								</div>
 								<!-- 红外控制 -->
@@ -60,13 +60,13 @@
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
 										<p>键值{{data_each["id"]}}: {{data_each["value"]}} at: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										 <div class="flex" style="white-space: pre-wrap;">
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 'on')">常高</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'on')">常高</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 'off')">常低</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'off')">常低</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 't_on')">触高</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_on')">触高</button>
 											 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											 <button class="btn btn-primary" @click="send(key,data_each['id'], 't_off')">触低</button>
+											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_off')">触低</button>
 										 </div>
 										 <span v-html="'<br>'"></span>
 									</div>
@@ -75,13 +75,13 @@
 										<p>红外控制</p>
 									</div>
 									<div class="flex" style="white-space: pre-wrap;">
-										 <button class="btn btn-primary" @click="send(key,0, 'open')">打开</button>
+										 <button class="btn btn-primary" @click="send(key.substr(1,),0, 'open')">打开</button>
 										 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-										 <button class="btn btn-primary" @click="send(key,0, 'close')">关闭</button>
+										 <button class="btn btn-primary" @click="send(key.substr(1,),0, 'close')">关闭</button>
 										 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-										 <button class="btn btn-primary" @click="send(key,0, 'up')">调高</button>
+										 <button class="btn btn-primary" @click="send(key.substr(1,),0, 'up')">调高</button>
 										 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-										 <button class="btn btn-primary" @click="send(key,0, 'down')">调低</button>
+										 <button class="btn btn-primary" @click="send(key.substr(1,),0, 'down')">调低</button>
 									</div>
 								</div>
 								
@@ -98,7 +98,7 @@
 											latitude: data_each.value.lat,longitude: data_each.value.lon,
 											width: 20,height: 30,
 											title: each.comments
-										}]" style="width: 100%; height: 600rpx;"></map>
+										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
 										
 										<div class="flex" style="white-space: pre-wrap;">
@@ -107,7 +107,7 @@
 											<uni-datetime-picker type="datetime" v-model="timeEnd" @change="changeTime($event, 'end')" />
 										</div>
 										<div class="flex" style="white-space: pre-wrap;">
-											<button class="btn btn-secondary" @click="create_path(key);">生成轨迹并查看</button>
+											<button class="btn btn-secondary" @click="create_path(key.substr(1,));">生成轨迹并查看</button>
 											<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 											<button class="btn btn-secondary" @click="open_location(data_each.value.lat, data_each.value.lon);">位置分享/导航</button>
 										</div>
@@ -154,8 +154,9 @@
 						
 						<div v-if="seen_id==2" style="display: inline-block;">
 							<div v-for="(each,key,index) in temp_data" style="display: flex;flex-direction: column;align-items: center;">
-								<p v-if="each['status']=='在线'" style="color: red;">{{each["status"]}} </p><p v-else style="">{{each["status"]}} </p>
-								<p>设备号: {{key}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span></p>
+								<div class="flex" style="white-space: pre-wrap;" @click="copy(key.substr(1,))">
+									设备号: {{key.substr(1,)}} <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span> <span v-if="each.device_type != 3 && each['status']=='在线'" style="color: red;">{{each["status"]}} </span><span v-else-if="each.device_type != 3" style="">{{each["status"]}} </span>
+								</div>
 								<div class="flex" style="white-space: pre-wrap;">
 									 <button class="btn btn-primary" @click="send_usb('mkl')" style="display: flex;flex-direction: column;align-items: center;">鼠标左键</button>
 									 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
