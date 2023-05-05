@@ -250,7 +250,7 @@ export default {
 							data: {'devIds':that.device_ids},
 							method:'GET',//请求方式  或GET，必须为大写
 							success: res => {
-								// console.log('返回', res.data["data"]);
+								console.log('返回', res.data["data"]);
 								for (var idx=0; idx < res.data["data"]["devices"].length; idx++){
 									var device_data = res.data["data"]["devices"][idx];
 									// 修改顺序 data0 data2 ..
@@ -263,6 +263,14 @@ export default {
 											var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
 											device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
 											device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
+											// 添加wifi名
+											for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length;in_in_idx++){
+												if(device_data["datastreams"][in_in_idx]["id"] == "ssid"){
+													if(device_data["datastreams"][in_in_idx]["at"] == device_data["datastreams"][in_idx]["at"]){
+														device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
+													}
+												}
+											}
 										}
 									}
 									temp_data["+"+device_data["id"]]["datastreams"] = device_data["datastreams"];

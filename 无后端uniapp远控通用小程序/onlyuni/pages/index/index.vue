@@ -91,6 +91,7 @@
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 										<view v-if="data_each.id == 'location'" class="row-bottom" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 											<p>{{data_each["at"]}}</p>
+											<p v-if="data_each.value.ssid">距离最近WIFI: {{data_each.value.ssid}}</p>
 											<!-- <p>{{data_each.value.lon}},{{data_each.value.lat}}</p> -->
 											<map id="map" :longitude="data_each.value.lon" :latitude="data_each.value.lat" :scale="16" :circles="circles" 
 											:markers="[{
