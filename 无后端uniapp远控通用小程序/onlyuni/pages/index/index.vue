@@ -86,14 +86,14 @@
 								</div>
 								
 								<!-- 地图显示 -->
-								<div v-if="each['device_type'] == 3" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+								<div v-if="each['device_type'] == 3 || each['device_type'] == 4" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 									<!-- {{each.datastreams[0]["value"]["lat"]}} -->
 									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 										<view v-if="data_each.id == 'location'" class="row-bottom" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 											<p>{{data_each["at"]}}</p>
 											<p v-if="data_each.value.ssid">距离最近WIFI: {{data_each.value.ssid}}</p>
 											<!-- <p>{{data_each.value.lon}},{{data_each.value.lat}}</p> -->
-											<map id="map" :longitude="data_each.value.lon" :latitude="data_each.value.lat" :scale="16" :circles="circles" 
+											<map id="map" :longitude="data_each.value.lon" :latitude="data_each.value.lat" :scale="16" 
 											:markers="[{
 											id: data_index,
 											latitude: data_each.value.lat,longitude: data_each.value.lon,
@@ -101,7 +101,11 @@
 											title: each.comments
 										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
-										
+										<div class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;" v-if="each['device_type'] == 4">
+											<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+											<input v-model="data_each.value.st_time" style="width: 25%;border:0.5px solid #378888; white-space: pre-wrap;" type="text">
+											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time);">修改定时时长(/分钟)</button>
+										</div>
 										<div class="flex" style="white-space: pre-wrap;">
 											<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
 											-
@@ -214,7 +218,7 @@
 						<div v-if="seen_id==-1" style="display: inline-block;">
 							<button class="btn btn-primary" @click="restore_seen_id();">返回原主页</button>
 							<span v-html="'<br>'"></span>
-							<map id="map" :longitude="polyline[0].points[0].lon" :latitude="polyline[0].points[0].lat" :circles="circles" 
+							<map id="map" :longitude="polyline[0].points[0].lon" :latitude="polyline[0].points[0].lat"
 										:include-points="polyline[0].points" :polyline="polyline" :markers="polyline[0].markers" style="width: 100%; height: 750rpx;"></map>
 							<div class="flex" style="white-space: pre-wrap;">
 								<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />

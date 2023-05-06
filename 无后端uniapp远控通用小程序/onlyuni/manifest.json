@@ -42,7 +42,12 @@
             },
             /* ios打包配置 */
             "ios" : {
-                "dSYMs" : false
+                "dSYMs" : false,
+                "capabilities" : {
+                    "entitlements" : {
+                        "com.apple.developer.associated-domains" : []
+                    }
+                }
             },
             /* SDK配置 */
             "sdkConfigs" : {
@@ -76,24 +81,42 @@
         "enable" : false
     },
     "h5" : {
-        // "title" : "监控系统",
-        // "domain" : "",
-        // "router" : {
-        //     "base" : "./"
-        // }
         "devServer" : {
-            "port" : 80,
-            "disableHostCheck" : true,
+            "disableHostCheck" : true, //禁止访问本地host文件
+            "port" : 443, //修改项目端口
             "proxy" : {
-                //配置代理服务器来解决跨域问题，uniapp不适用CORS方案和设置JSONP方案
-                "/unionenet/" : {
-                    //映射域名
-                    "target" : "http://api.heclouds.com",
+                /**配置服务器路径**/
+                "/api" : {
+                    "target" : "https://api.heclouds.com", // 目标服务器
+                    "secure" : true,
+                    "changeOrigin" : true,
+                    /**重写路径**/
                     "pathRewrite" : {
-                        "^/unionenet" : ""
+                        "^/api" : "/"
                     }
                 }
             }
+        },
+        // "router" : {
+        //     "base" : "/H5/",
+        //     "mode" : "hash"
+        // },
+        "router" : {
+            "base" : "/files/public/locator/",
+            "mode" : "hash"
+        },
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : "MYZBZ-NHSW7-MSRX7-PT7E4-VUALJ-46FWE"
+                }
+            }
         }
-    }
+    },
+    "vueVersion" : "2"
 }
+// "router" : {
+//     "base" : "/H5/",
+//     "mode" : "hash"
+// },
+

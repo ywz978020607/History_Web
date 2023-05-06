@@ -9687,7 +9687,7 @@ var _default = {
       input_val: [null, null, null, null, null, null, 5, null],
       //初始化, null可缺省
       // 0-产品ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
-      // 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型]，
+      // 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型, 4-地图类型定时工作版]，
       temp_data: {},
       direction: "https://api.heclouds.com" // "http://183.230.40.34"
     };
@@ -9722,7 +9722,9 @@ var _default = {
     this.timeStart = new Date(new Date().getTime() - (24 - 8) * 60 * 60 * 1000).toISOString().split('.')[0];
     this.timeEnd = new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toISOString().split('.')[0];
     console.log(this.timeEnd);
+    // debug
   },
+
   methods: {
     //////////////////////////////////
     quit: function quit(event) {
@@ -9767,32 +9769,27 @@ var _default = {
     /////////////////////////////////////
     //操作--button1
     change_seen_id: function change_seen_id(new_seen_id) {
-      // console.log(new_seen_id);
+      console.log(new_seen_id);
+      var that = this;
       var changed = false;
-      if (new_seen_id != this.seen_id) {
+      if (new_seen_id != that.seen_id) {
         changed = true;
-        this.seen_id = new_seen_id;
+        that.seen_id = new_seen_id;
         if (new_seen_id >= 0) {
-          uni.setStorageSync("seen_id", this.seen_id);
+          uni.setStorageSync("seen_id", that.seen_id);
         }
       }
       // 主页刷新
-      switch (this.seen_id) {
-        case '0':
-          this.check_main(0);
-          break;
-        case '1':
-          if (changed) {
-            this.init_info();
-          }
-          break;
-        case '2':
-          this.check_main(2);
-          break;
-        // case 'x':
-        // 	this.debug();
-        // 	break;
+      if (that.seen_id == '0') {
+        that.check_main(0);
+      } else if (that.seen_id == '1') {
+        if (changed) {
+          that.init_info();
+        }
+      } else if (that.seen_id == '2') {
+        that.check_main(2);
       }
+      // this.debug();
     },
     restore_seen_id: function restore_seen_id(e) {
       if (uni.getStorageSync("seen_id")) {
@@ -9903,12 +9900,17 @@ var _default = {
                     var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
                     device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
                     device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
-                    // 添加wifi名
+                    device_data["datastreams"][in_idx]["value"]["st_time"] = 'unset'; //默认
                     for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length; in_in_idx++) {
+                      // 添加wifi名
                       if (device_data["datastreams"][in_in_idx]["id"] == "ssid") {
                         if (device_data["datastreams"][in_in_idx]["at"] == device_data["datastreams"][in_idx]["at"]) {
                           device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
                         }
+                      }
+                      // 添加st_time
+                      if (device_data["datastreams"][in_in_idx]["id"] == "st") {
+                        device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
                       }
                     }
                   }
@@ -10029,7 +10031,8 @@ var _default = {
       if (that.input_val[7]) {
         uni.setStorageSync("device_type", that.input_val[7]);
       }
-      this.check_main();
+      // console.log("set done and get:", uni.getStorageSync("comments"));
+      // this.check_main();
       uni.showToast({
         title: "成功",
         icon: "none"
@@ -10037,8 +10040,8 @@ var _default = {
     },
     // 加载缓存显示
     init_info: function init_info() {
-      this.load_storage();
       var that = this;
+      that.load_storage();
       that.input_val[0] = that.device_ids;
       that.input_val[1] = that.comments;
       that.input_val[2] = that.api_key;
@@ -10166,6 +10169,30 @@ var _default = {
     },
     load_info: function load_info() {
       this.input_val = JSON.parse(this.info_dump);
+    },
+    // 设定睡眠时间st
+    set_onenet_http: function set_onenet_http(device_id, key_name, value) {
+      var that = this;
+      var datastreams = [];
+      datastreams.push({
+        "id": key_name,
+        "datapoints": [{
+          "value": value
+        }]
+      });
+      uni.request({
+        url: that.direction + "/devices/" + device_id + "/datapoints",
+        header: {
+          "api-key": that.api_key
+        },
+        data: {
+          'datastreams': datastreams
+        },
+        method: 'POST',
+        success: function success(res) {
+          console.log('返回status', res.data["data"]);
+        }
+      });
     } // debug(){
     // 	console.log("地图轨迹绘制");
     // 	var that = this;

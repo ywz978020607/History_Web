@@ -193,13 +193,18 @@ var render = function () {
           var g19 = each["device_type"] == 2 ? key.substr(1) : null
           var g20 = each["device_type"] == 2 ? key.substr(1) : null
           var l3 =
-            each["device_type"] == 3
+            each["device_type"] == 3 || each["device_type"] == 4
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g21 = data_each.id == "location" ? key.substr(1) : null
+                  var g21 =
+                    data_each.id == "location" && each["device_type"] == 4
+                      ? key.substr(1)
+                      : null
+                  var g22 = data_each.id == "location" ? key.substr(1) : null
                   return {
                     $orig: $orig,
                     g21: g21,
+                    g22: g22,
                   }
                 })
               : null
@@ -222,12 +227,12 @@ var render = function () {
     _vm.seen_id == 2
       ? _vm.__map(_vm.temp_data, function (each, key) {
           var $orig = _vm.__get_orig(each)
-          var g22 = key.substr(1)
           var g23 = key.substr(1)
+          var g24 = key.substr(1)
           return {
             $orig: $orig,
-            g22: g22,
             g23: g23,
+            g24: g24,
           }
         })
       : null
@@ -281,6 +286,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _index = _interopRequireDefault(__webpack_require__(/*! ./index.js */ 40));
+//
+//
+//
+//
 //
 //
 //
