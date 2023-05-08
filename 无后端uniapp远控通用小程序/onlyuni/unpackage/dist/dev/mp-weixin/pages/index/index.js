@@ -201,14 +201,26 @@ var render = function () {
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
                   var g23 =
+                    data_each["id"].slice(0, 4) == "data" ||
+                    data_each["id"].slice(0, 2) == "in"
+                  var g24 = g23 ? data_each["at"].slice(0, 10) : null
+                  var g25 = g23 ? data_each["at"].slice(11, 19) : null
+                  var g26 = g23 ? data_each["id"].slice(0, 4) : null
+                  var g27 = g23 && g26 == "data" ? key.substr(1) : null
+                  var g28 =
                     data_each.id == "location" && each["device_type"] == 4
                       ? key.substr(1)
                       : null
-                  var g24 = data_each.id == "location" ? key.substr(1) : null
+                  var g29 = data_each.id == "location" ? key.substr(1) : null
                   return {
                     $orig: $orig,
                     g23: g23,
                     g24: g24,
+                    g25: g25,
+                    g26: g26,
+                    g27: g27,
+                    g28: g28,
+                    g29: g29,
                   }
                 })
               : null
@@ -231,12 +243,12 @@ var render = function () {
     _vm.seen_id == 2
       ? _vm.__map(_vm.temp_data, function (each, key) {
           var $orig = _vm.__get_orig(each)
-          var g25 = key.substr(1)
-          var g26 = key.substr(1)
+          var g30 = key.substr(1)
+          var g31 = key.substr(1)
           return {
             $orig: $orig,
-            g25: g25,
-            g26: g26,
+            g30: g30,
+            g31: g31,
           }
         })
       : null
@@ -290,6 +302,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _index = _interopRequireDefault(__webpack_require__(/*! ./index.js */ 40));
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

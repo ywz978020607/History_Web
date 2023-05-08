@@ -526,7 +526,11 @@ export default {
 					data: {'datastreams': datastreams},
 					method:'POST',
 					success: res => {
-						console.log('返回status', res.data["data"]);
+						// console.log('返回status', res.data["data"]);
+						uni.showToast({
+							title: "成功",
+							icon: "none"
+						})
 					}
 				});
 			},
