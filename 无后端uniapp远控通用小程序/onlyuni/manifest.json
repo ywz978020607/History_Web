@@ -83,6 +83,7 @@
     "h5" : {
         "devServer" : {
             "disableHostCheck" : true, //禁止访问本地host文件
+            "https" : true,
             "port" : 443, //修改项目端口
             "proxy" : {
                 /**配置服务器路径**/
@@ -92,7 +93,7 @@
                     "changeOrigin" : true,
                     /**重写路径**/
                     "pathRewrite" : {
-                        "^/api" : "/"
+                        "^/api" : ""
                     }
                 }
             }

@@ -55,7 +55,7 @@ export default {
 			direction: "https://api.heclouds.com", // "http://183.230.40.34"
 			//#endif
 			//#ifdef H5
-			direction: "https://api.heclouds.com", //"/api",
+			direction: "/apionenet", //"/api",
 			//#endif
 		}
 	},
