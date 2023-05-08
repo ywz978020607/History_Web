@@ -135,12 +135,13 @@ var render = function () {
             each["device_type"] == 0
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g2 = data_each["at"].slice(0, 10)
-                  var g3 = data_each["at"].slice(11, 19)
-                  var g4 = key.substr(1)
-                  var g5 = key.substr(1)
-                  var g6 = key.substr(1)
-                  var g7 = key.substr(1)
+                  var g2 = data_each["id"].slice(0, 4)
+                  var g3 = g2 == "data" ? data_each["at"].slice(0, 10) : null
+                  var g4 = g2 == "data" ? data_each["at"].slice(11, 19) : null
+                  var g5 = g2 == "data" ? key.substr(1) : null
+                  var g6 = g2 == "data" ? key.substr(1) : null
+                  var g7 = g2 == "data" ? key.substr(1) : null
+                  var g8 = g2 == "data" ? key.substr(1) : null
                   return {
                     $orig: $orig,
                     g2: g2,
@@ -149,6 +150,7 @@ var render = function () {
                     g5: g5,
                     g6: g6,
                     g7: g7,
+                    g8: g8,
                   }
                 })
               : null
@@ -156,14 +158,16 @@ var render = function () {
             each["device_type"] == 1
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g8 = data_each["at"].slice(0, 10)
-                  var g9 = data_each["at"].slice(11, 19)
-                  var g10 = key.substr(1)
+                  var g9 = data_each["id"].slice(0, 4)
+                  var g10 = g9 == "data" ? data_each["at"].slice(0, 10) : null
+                  var g11 = g9 == "data" ? data_each["at"].slice(11, 19) : null
+                  var g12 = g9 == "data" ? key.substr(1) : null
                   return {
                     $orig: $orig,
-                    g8: g8,
                     g9: g9,
                     g10: g10,
+                    g11: g11,
+                    g12: g12,
                   }
                 })
               : null
@@ -171,40 +175,40 @@ var render = function () {
             each["device_type"] == 2
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g11 = data_each["at"].slice(0, 10)
-                  var g12 = data_each["at"].slice(11, 19)
-                  var g13 = key.substr(1)
-                  var g14 = key.substr(1)
+                  var g13 = data_each["at"].slice(0, 10)
+                  var g14 = data_each["at"].slice(11, 19)
                   var g15 = key.substr(1)
                   var g16 = key.substr(1)
+                  var g17 = key.substr(1)
+                  var g18 = key.substr(1)
                   return {
                     $orig: $orig,
-                    g11: g11,
-                    g12: g12,
                     g13: g13,
                     g14: g14,
                     g15: g15,
                     g16: g16,
+                    g17: g17,
+                    g18: g18,
                   }
                 })
               : null
-          var g17 = each["device_type"] == 2 ? key.substr(1) : null
-          var g18 = each["device_type"] == 2 ? key.substr(1) : null
           var g19 = each["device_type"] == 2 ? key.substr(1) : null
           var g20 = each["device_type"] == 2 ? key.substr(1) : null
+          var g21 = each["device_type"] == 2 ? key.substr(1) : null
+          var g22 = each["device_type"] == 2 ? key.substr(1) : null
           var l3 =
             each["device_type"] == 3 || each["device_type"] == 4
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g21 =
+                  var g23 =
                     data_each.id == "location" && each["device_type"] == 4
                       ? key.substr(1)
                       : null
-                  var g22 = data_each.id == "location" ? key.substr(1) : null
+                  var g24 = data_each.id == "location" ? key.substr(1) : null
                   return {
                     $orig: $orig,
-                    g21: g21,
-                    g22: g22,
+                    g23: g23,
+                    g24: g24,
                   }
                 })
               : null
@@ -215,10 +219,10 @@ var render = function () {
             l0: l0,
             l1: l1,
             l2: l2,
-            g17: g17,
-            g18: g18,
             g19: g19,
             g20: g20,
+            g21: g21,
+            g22: g22,
             l3: l3,
           }
         })
@@ -227,12 +231,12 @@ var render = function () {
     _vm.seen_id == 2
       ? _vm.__map(_vm.temp_data, function (each, key) {
           var $orig = _vm.__get_orig(each)
-          var g23 = key.substr(1)
-          var g24 = key.substr(1)
+          var g25 = key.substr(1)
+          var g26 = key.substr(1)
           return {
             $orig: $orig,
-            g23: g23,
-            g24: g24,
+            g25: g25,
+            g26: g26,
           }
         })
       : null
@@ -286,6 +290,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _index = _interopRequireDefault(__webpack_require__(/*! ./index.js */ 40));
+//
+//
+//
+//
 //
 //
 //
