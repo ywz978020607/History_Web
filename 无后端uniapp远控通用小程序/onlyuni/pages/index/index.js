@@ -260,7 +260,7 @@ export default {
 											device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
 											device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
 											
-											device_data["datastreams"][in_idx]["value"]["st_time"] = 'unset'; //默认
+											device_data["datastreams"][in_idx]["value"]["st_time"] = '未设置'; //默认
 											for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length;in_in_idx++){
 												// 添加wifi名
 												if(device_data["datastreams"][in_in_idx]["id"] == "ssid"){
