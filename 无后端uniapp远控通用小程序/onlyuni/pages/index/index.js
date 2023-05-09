@@ -287,7 +287,7 @@ export default {
 					console.log("check main error", e);
 				}
 			},
-			send(device_id, key_name, action) {
+			send(device_id, key_name, action, period=null) {
 				var that = this;
 				uni.request({
 					url: that.direction + "/cmds?device_id=" + device_id,
@@ -296,8 +296,7 @@ export default {
 						// key_name: JSON.stringify(action, that.trigger_time),
 						"key_name": key_name,
 						"action": action,
-						"period": that.trigger_time
-						
+						"period": period || that.trigger_time
 					},
 					method:'POST',//请求方式  或GET，必须为大写
 					success: res => {
@@ -533,6 +532,7 @@ export default {
 						})
 					}
 				});
+				that.send(device_id, "st", "st", value);
 			},
 			
 			// debug(){
