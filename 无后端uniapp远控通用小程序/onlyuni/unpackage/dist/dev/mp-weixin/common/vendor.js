@@ -10199,6 +10199,14 @@ var _default = {
         }
       });
       that.send(device_id, "st", "st", value);
+    },
+    delay_fresh: function delay_fresh() {
+      var delay_time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2000;
+      var that = this;
+      setTimeout(function () {
+        // 这里写要延时执行的代码
+        that.change_seen_id(that.seen_id);
+      }, delay_time); // 这里的 1000 表示延时的时间，单位是毫秒
     } // debug(){
     // 	console.log("地图轨迹绘制");
     // 	var that = this;

@@ -201,8 +201,9 @@ var render = function () {
               ? _vm.__map(each.datastreams, function (data_each, data_key) {
                   var $orig = _vm.__get_orig(data_each)
                   var g23 =
-                    data_each["id"].slice(0, 4) == "data" ||
-                    data_each["id"].slice(0, 2) == "in"
+                    each["device_type"] == 4 &&
+                    (data_each["id"].slice(0, 4) == "data" ||
+                      data_each["id"].slice(0, 2) == "in")
                   var g24 = g23 ? data_each["at"].slice(0, 10) : null
                   var g25 = g23 ? data_each["at"].slice(11, 19) : null
                   var g26 = g23 ? data_each["id"].slice(0, 4) : null
