@@ -125,7 +125,7 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var l4 =
+  var l5 =
     _vm.seen_id == 0
       ? _vm.__map(_vm.temp_data, function (each, key) {
           var $orig = _vm.__get_orig(each)
@@ -133,7 +133,7 @@ var render = function () {
           var g1 = key.substr(1)
           var l0 =
             each["device_type"] == 0
-              ? _vm.__map(each.datastreams, function (data_each, data_key) {
+              ? _vm.__map(each.datastreams, function (data_each, data_index) {
                   var $orig = _vm.__get_orig(data_each)
                   var g2 = data_each["id"].slice(0, 4)
                   var g3 = g2 == "data" ? data_each["at"].slice(0, 10) : null
@@ -156,7 +156,7 @@ var render = function () {
               : null
           var l1 =
             each["device_type"] == 1
-              ? _vm.__map(each.datastreams, function (data_each, data_key) {
+              ? _vm.__map(each.datastreams, function (data_each, data_index) {
                   var $orig = _vm.__get_orig(data_each)
                   var g9 = data_each["id"].slice(0, 4)
                   var g10 = g9 == "data" ? data_each["at"].slice(0, 10) : null
@@ -173,7 +173,7 @@ var render = function () {
               : null
           var l2 =
             each["device_type"] == 2
-              ? _vm.__map(each.datastreams, function (data_each, data_key) {
+              ? _vm.__map(each.datastreams, function (data_each, data_index) {
                   var $orig = _vm.__get_orig(data_each)
                   var g13 = data_each["at"].slice(0, 10)
                   var g14 = data_each["at"].slice(11, 19)
@@ -197,22 +197,22 @@ var render = function () {
           var g21 = each["device_type"] == 2 ? key.substr(1) : null
           var g22 = each["device_type"] == 2 ? key.substr(1) : null
           var l3 =
-            each["device_type"] == 3 || each["device_type"] == 4
-              ? _vm.__map(each.datastreams, function (data_each, data_key) {
+            each["device_type"] == "relay"
+              ? _vm.__map(each.datastreams, function (data_each, data_index) {
                   var $orig = _vm.__get_orig(data_each)
-                  var g23 =
-                    each["device_type"] == 4 &&
-                    (data_each["id"].slice(0, 4) == "data" ||
-                      data_each["id"].slice(0, 2) == "in")
-                  var g24 = g23 ? data_each["at"].slice(0, 10) : null
-                  var g25 = g23 ? data_each["at"].slice(11, 19) : null
-                  var g26 = g23 ? data_each["id"].slice(0, 4) : null
-                  var g27 = g23 && g26 == "data" ? key.substr(1) : null
-                  var g28 =
-                    data_each.id == "location" && each["device_type"] == 4
-                      ? key.substr(1)
+                  var g23 = data_each["id"].slice(0, 4)
+                  var g24 =
+                    g23 == "data" && data_each["value"] == "0"
+                      ? data_each["id"].slice(4)
                       : null
-                  var g29 = data_each.id == "location" ? key.substr(1) : null
+                  var g25 =
+                    g23 == "data" && data_each["value"] == "1"
+                      ? data_each["id"].slice(4)
+                      : null
+                  var g26 = g23 == "data" ? data_each["at"].slice(0, 10) : null
+                  var g27 = g23 == "data" ? data_each["at"].slice(11, 19) : null
+                  var g28 = g23 == "data" ? key.substr(1) : null
+                  var g29 = g23 == "data" ? key.substr(1) : null
                   return {
                     $orig: $orig,
                     g23: g23,
@@ -222,6 +222,35 @@ var render = function () {
                     g27: g27,
                     g28: g28,
                     g29: g29,
+                  }
+                })
+              : null
+          var l4 =
+            each["device_type"] == 3 || each["device_type"] == 4
+              ? _vm.__map(each.datastreams, function (data_each, data_index) {
+                  var $orig = _vm.__get_orig(data_each)
+                  var g30 =
+                    each["device_type"] == 4 &&
+                    (data_each["id"].slice(0, 4) == "data" ||
+                      data_each["id"].slice(0, 2) == "in")
+                  var g31 = g30 ? data_each["at"].slice(0, 10) : null
+                  var g32 = g30 ? data_each["at"].slice(11, 19) : null
+                  var g33 = g30 ? data_each["id"].slice(0, 4) : null
+                  var g34 = g30 && g33 == "data" ? key.substr(1) : null
+                  var g35 =
+                    data_each.id == "location" && each["device_type"] == 4
+                      ? key.substr(1)
+                      : null
+                  var g36 = data_each.id == "location" ? key.substr(1) : null
+                  return {
+                    $orig: $orig,
+                    g30: g30,
+                    g31: g31,
+                    g32: g32,
+                    g33: g33,
+                    g34: g34,
+                    g35: g35,
+                    g36: g36,
                   }
                 })
               : null
@@ -237,19 +266,20 @@ var render = function () {
             g21: g21,
             g22: g22,
             l3: l3,
+            l4: l4,
           }
         })
       : null
-  var l5 =
+  var l6 =
     _vm.seen_id == 2
       ? _vm.__map(_vm.temp_data, function (each, key) {
           var $orig = _vm.__get_orig(each)
-          var g30 = key.substr(1)
-          var g31 = key.substr(1)
+          var g37 = key.substr(1)
+          var g38 = key.substr(1)
           return {
             $orig: $orig,
-            g30: g30,
-            g31: g31,
+            g37: g37,
+            g38: g38,
           }
         })
       : null
@@ -257,8 +287,8 @@ var render = function () {
     {},
     {
       $root: {
-        l4: l4,
         l5: l5,
+        l6: l6,
       },
     }
   )
@@ -303,6 +333,33 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _index = _interopRequireDefault(__webpack_require__(/*! ./index.js */ 40));
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

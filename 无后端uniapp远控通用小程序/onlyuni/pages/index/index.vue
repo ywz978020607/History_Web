@@ -33,7 +33,7 @@
 								</div>
 								<!-- 通用IO -->
 								<div v-if="each['device_type'] == 0">
-									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
+									<div v-for="(data_each,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
 										<div v-if="data_each['id'].slice(0,4)=='data'" style="display: flex;flex-direction: column;align-items: center;">
 											<p>键值{{data_each["id"]}}: {{data_each["value"]}} at: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 											 <div class="flex" style="white-space: pre-wrap;">
@@ -51,7 +51,7 @@
 								</div>
 								<!-- 剪裁版IO1 -->
 								<div v-if="each['device_type'] == 1">
-									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
+									<div v-for="(data_each,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
 										<div v-if="data_each['id'].slice(0,4)=='data'" style="display: flex;flex-direction: column;align-items: center;">
 											<p>键值{{data_each["id"]}}: {{data_each["value"]}} {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 											<!-- <span v-html="'<br>'"></span>  -->
@@ -61,7 +61,7 @@
 								</div>
 								<!-- 红外控制 -->
 								<div v-if="each['device_type'] == 2">
-									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
+									<div v-for="(data_each,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
 										<p>键值{{data_each["id"]}}: {{data_each["value"]}} at: {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 										 <div class="flex" style="white-space: pre-wrap;">
 											 <button class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'on')">常高</button>
@@ -88,11 +88,38 @@
 										 <button class="btn btn-primary" @click="send(key.substr(1,),0, 'down')">调低</button>
 									</div>
 								</div>
+								<!-- 重命名for继电器控制-输出常低-继电器高电平触发 -->
+								<div v-if="each['device_type'] == 'relay'">
+									<div v-for="(data_each,data_index) in each.datastreams" :obj="data_each.id" style="display: flex;flex-direction: column;align-items: center;">
+										<div v-if="data_each['id'].slice(0,4)=='data'" style="display: flex;flex-direction: column;align-items: center;">
+											<p v-if="data_each['value']=='0'" style="font-size: 60rpx;color: red;">{{data_each["id"].slice(4,)}} 关闭</p>
+											<p v-if="data_each['value']=='1'" style="font-size: 60rpx;color: blue;">{{data_each["id"].slice(4,)}} 开启</p>
+											<p>{{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
+											 <div class="flex" style="white-space: pre-wrap;">
+												 <button style="height: 100rpx;font-size: 35rpx;" class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'on');delay_fresh();">开启</button>
+												 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+												 <button style="height: 100rpx;font-size: 35rpx;" class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 'off');delay_fresh();">关闭</button>
+												 <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>												 
+												 <!-- <button style="height: 100rpx;font-size: 35rpx;" class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_on')">定时开</button> -->
+												 <!-- <span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+												 <button style="height: 100rpx;font-size: 35rpx;" class="btn btn-primary" @click="send(key.substr(1,),data_each['id'], 't_off')">定时关</button> -->
+												<div v-if="(data_index+1) % 3 == 0">
+													<span v-html="'<br>'"></span>
+													<span v-html="'<br>'"></span>
+													<span v-html="'<br>'"></span>
+													<span v-html="'<br>'"></span>
+												</div>
+												 
+											 </div>
+										 </div>
+										 <!-- <span v-html="'<br>'"></span> -->
+									</div>
+								</div>
 								
 								<!-- 地图显示 -->
 								<div v-if="each['device_type'] == 3 || each['device_type'] == 4" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 									<!-- {{each.datastreams[0]["value"]["lat"]}} -->
-									<div v-for="(data_each,data_key,data_index) in each.datastreams" :obj="data_each.id" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+									<div v-for="(data_each,data_index) in each.datastreams" :obj="data_each.id" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 										<div v-if="each['device_type'] == 4 && (data_each['id'].slice(0,4)=='data' || data_each['id'].slice(0,2)=='in')" style="display: flex;flex-direction: column;align-items: center;">
 											<p>{{data_each["id"]}}: {{data_each["value"]}} {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 											<button v-if="data_each['id'].slice(0,4)=='data'" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="send(key.substr(1,),data_each['id'], 't_off');delay_fresh();">触低发送</button>
