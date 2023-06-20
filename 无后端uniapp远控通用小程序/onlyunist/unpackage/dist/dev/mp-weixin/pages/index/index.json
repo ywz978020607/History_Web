@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "摸鱼大鸽物联网",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-datetime-picker": "/uni_modules/uni-datetime-picker/components/uni-datetime-picker/uni-datetime-picker"
+  }
+}
