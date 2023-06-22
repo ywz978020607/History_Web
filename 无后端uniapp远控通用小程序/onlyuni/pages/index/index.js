@@ -6,7 +6,7 @@ var _self;
 // var Data={
 // 	LineA:{categories:['2012', '2013', '2014', '2015', '2016', '2017'],series:[{name: '成交量A',data:[35, 20, 25, 37, 4, 20]},{name: '成交量B',data:[70, 40, 65, 100, 44, 68]},{name: '成交量C',data:[100, 80, 95, 150, 112, 132]},{name: '成交量D',data:[100, 80, 95, 150, 112, 132]}]},
 // 	}
-		
+
 export default {
 	data() {
 		return {
@@ -65,7 +65,7 @@ export default {
 		// this.username="test";
 		// }
 		// else{
-		// this.username = options.username;		
+		// this.username = options.username;
 		// }
 		this.restore_seen_id();
 		console.log("seen_id:", this.seen_id);
@@ -73,10 +73,10 @@ export default {
 		//加载时先刷新一下
 		this.fresh();
 		// this.check_main(this.seen_id);
-		
+
 		//定时器
 		// this.dataRefresh();
-		
+
 		//画布
 		_self = this;
 		//#ifdef H5 || MP-ALIPAY || MP-BAIDU || MP-TOUTIAO
@@ -185,8 +185,8 @@ export default {
 				var devices_type = that.device_type.split(",");
 				var hid_usb_split = that.hid_usb.split(",");
 				var temp_data = {};
-				
-				try{	
+
+				try{
 					// WIFI-HID类型只查询在线状态
 					if (seen_id == 2){
 						for(var idx=0;idx<hid_usb_split.length;idx++){
@@ -259,7 +259,7 @@ export default {
 											var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
 											device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
 											device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
-											
+
 											device_data["datastreams"][in_idx]["value"]["st_time"] = '未设置'; //默认
 											for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length;in_in_idx++){
 												// 添加wifi名
@@ -279,9 +279,9 @@ export default {
 								}
 							}
 						});
-						
+
 					}
-					
+
 					that.temp_data = temp_data;
 				}catch(e){
 					console.log("check main error", e);
@@ -455,7 +455,7 @@ export default {
 						// 坐标转换
 						for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
 							var translate_coor = that.translate_gps(
-								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"], 
+								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],
 								res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]
 							);
 							res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"] = translate_coor.latitude;
@@ -472,13 +472,13 @@ export default {
 								latitude:res.data["data"]["datastreams"][0]["datapoints"][0]["value"]["lat"],
 								longitude:res.data["data"]["datastreams"][0]["datapoints"][0]["value"]["lon"],
 								width:20, height:30,
-								callout: { //气泡窗口 
+								callout: { //气泡窗口
 									content: res.data["data"]["datastreams"][0]["datapoints"][0]["at"].split('.')[0], //文本
 									color: '#ffffff',
-									fontSize: 15, 
-									borderRadius: 15, 
+									fontSize: 15,
+									borderRadius: 15,
 									padding: '10',
-									bgColor: '#406390', 
+									bgColor: '#406390',
 									display: 'ALWAYS', //常显
 								  }
 							},
@@ -487,13 +487,13 @@ export default {
 								latitude:res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["value"]["lat"],
 								longitude:res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["value"]["lon"],
 								width:20, height:30,
-								callout: { //气泡窗口 
+								callout: { //气泡窗口
 									content: res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["at"].split('.')[0], //文本
 									color: '#ffffff',
-									fontSize: 15, 
-									borderRadius: 15, 
+									fontSize: 15,
+									borderRadius: 15,
 									padding: '10',
-									bgColor: '#406390', 
+									bgColor: '#406390',
 									display: 'ALWAYS', //常显
 								  }
 							},
@@ -560,7 +560,7 @@ export default {
 			// 			// 坐标转换
 			// 			for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
 			// 				var translate_coor = that.translate_gps(
-			// 					res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"], 
+			// 					res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"],
 			// 					res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lon"]
 			// 				);
 			// 				res.data["data"]["datastreams"][0]["datapoints"][in_idx]["value"]["lat"] = translate_coor.latitude;
@@ -570,7 +570,7 @@ export default {
 			// 			}
 			// 			// temp_data["+"+"datastreams"] = res.data["data"]["datastreams"];
 			// 			// console.log(temp_data);
-						
+
 			// 		}
 			// 	});
 			// }

@@ -523,7 +523,7 @@ export default {
 						}]
 					})
 				uni.request({
-					url: that.direction + "/devices/1097281683/datapoints",
+					url: that.direction_old + "/devices/1097281683/datapoints",
 					header: { "api-key": "CSwWZsNXKRVJz=XUMES=qfO7p8Q="},
 					data: {'datastreams': datastreams},
 					method:'POST',
