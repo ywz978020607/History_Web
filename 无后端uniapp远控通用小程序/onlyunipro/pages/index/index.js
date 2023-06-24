@@ -460,13 +460,13 @@ export default {
 			change() {
 				var that = this;
 				// if(that.input_val[0]){uni.setStorageSync("device_ids", that.input_val[0]);}
-				if(that.input_val[0]){uni.setStorageSync("device_ids", that.input_val[0]);}
-				if(that.input_val[1]){uni.setStorageSync("comments", that.input_val[1]);}
-				if(that.input_val[2]){uni.setStorageSync("api_key", that.input_val[2]);}
-				if(that.input_val[3]){uni.setStorageSync("trigger_time", that.input_val[3]);}
-				if(that.input_val[4]){uni.setStorageSync("hid_usb", that.input_val[4]);}
-				if(that.input_val[7]){uni.setStorageSync("device_type", that.input_val[7]);}
-				if(that.input_val[8]){uni.setStorageSync("product_id", that.input_val[8]);}
+				uni.setStorageSync("device_ids", that.input_val[0]);
+				uni.setStorageSync("comments", that.input_val[1]);
+				uni.setStorageSync("api_key", that.input_val[2]);
+				uni.setStorageSync("trigger_time", that.input_val[3]);
+				uni.setStorageSync("hid_usb", that.input_val[4]);
+				uni.setStorageSync("device_type", that.input_val[7]);
+				uni.setStorageSync("product_id", that.input_val[8]);
 				// console.log("set done and get:", uni.getStorageSync("comments"));
 				// this.check_main();
 				uni.showToast({
