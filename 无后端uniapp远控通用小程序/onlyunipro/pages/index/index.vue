@@ -202,7 +202,7 @@
 								<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 								<button class="btn btn-secondary" @click="load_info();">一键导入配置</button>
 							</div>
-							<input v-model="info_dump" style="border:0.5px solid #378888; white-space: pre-wrap;">
+							<input maxlength="500" v-model="info_dump" style="border:0.5px solid #378888; white-space: pre-wrap;">
 						</div>
 
 						<div v-if="seen_id==2" style="display: inline-block;">
