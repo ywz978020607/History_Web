@@ -126,6 +126,7 @@
 										</div>
 										<view v-if="data_each.id == 'location'" class="row-bottom" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 											<p>{{data_each["at"]}}</p>
+											<p v-if="data_each.value.battery">剩余电量数据: {{data_each.value.battery}}</p>
 											<p v-if="data_each.value.ssid">距离最近WIFI: {{data_each.value.ssid}}</p>
 											<!-- <p>{{data_each.value.lon}},{{data_each.value.lat}}</p> -->
 											<map id="map" :longitude="data_each.value.lon" :latitude="data_each.value.lat" :scale="16"

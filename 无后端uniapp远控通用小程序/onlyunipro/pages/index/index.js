@@ -303,6 +303,11 @@ export default {
 															device_data["datastreams"][st_time_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
 														}
 													}
+													// 添加电量数据
+													if(device_data["datastreams"][in_in_idx]["id"] == "b"){
+														device_data["datastreams"][st_time_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
+													}
+													
 													// // 扫描并添加自身st_time
 													// if(device_data["datastreams"][in_in_idx]["id"] == "st"){
 													// 	device_data["datastreams"][st_time_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
@@ -355,6 +360,12 @@ export default {
 															device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
 														}
 													}
+													
+													// 添加电量信息
+													if(device_data["datastreams"][in_in_idx]["id"] == "b"){
+														device_data["datastreams"][in_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
+													}
+													
 													// 添加st_time
 													if(device_data["datastreams"][in_in_idx]["id"] == "st"){
 														device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
