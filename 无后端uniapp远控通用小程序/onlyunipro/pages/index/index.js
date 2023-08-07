@@ -650,7 +650,7 @@ export default {
 						})
 					}
 				});
-				that.send(device_id, key_name, action=key_name, value);
+				that.send(device_id, key_name, key_name, value);
 			},
 			delay_fresh(delay_time=2000){
 				var that = this;
