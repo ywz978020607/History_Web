@@ -49,10 +49,13 @@ export default {
 			charts_len: 7,
 			//
 			info_dump: '',
-			input_val: [null, null, null, null, null, null, 5, null, null], //初始化, null可缺省
+			input_val: [null, null, null, null,
+				null, null, 5, null,
+				null, null], //初始化, null可缺省
 			// 0-设备ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
 			// 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型, 4-地图类型定时工作版]，
-			// 8-产品id
+			// 8-产品id, 9-补充配置的字符串输入
+			config_json: {}, // 补充配置
 			temp_data: {},
 			//#ifndef H5
 			direction: "https://iot-api.heclouds.com", // "http://183.230.40.34"
@@ -181,6 +184,9 @@ export default {
 				this.fresh();
 				uni.stopPullDownRefresh();
 			},
+			getDefaultDict(input_dict, input_key, default_val=''){
+				return input_dict[input_key]?input_dict[input_key]:(default_val?default_val:input_key);
+			},
 			check_main(seen_id = "") {
 				console.log("check once");
 				var that = this;
@@ -307,7 +313,7 @@ export default {
 													if(device_data["datastreams"][in_in_idx]["id"] == "b"){
 														device_data["datastreams"][st_time_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
 													}
-													
+
 													// // 扫描并添加自身st_time
 													// if(device_data["datastreams"][in_in_idx]["id"] == "st"){
 													// 	device_data["datastreams"][st_time_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
@@ -360,12 +366,12 @@ export default {
 															device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
 														}
 													}
-													
+
 													// 添加电量信息
 													if(device_data["datastreams"][in_in_idx]["id"] == "b"){
 														device_data["datastreams"][in_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
 													}
-													
+
 													// 添加st_time
 													if(device_data["datastreams"][in_in_idx]["id"] == "st"){
 														device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
@@ -386,6 +392,7 @@ export default {
 					console.log("check main error", e);
 				}
 			},
+			// 通过onenet下发mqtt指令到硬件 - synccmd
 			send(device_id, key_name, action, period=null) {
 				var that = this;
 				uni.request({
@@ -397,6 +404,31 @@ export default {
 						"action": action,
 						"period": period || that.trigger_time
 					},
+					method:'POST',//请求方式  或GET，必须为大写
+					success: res => {
+						uni.showToast({
+							title: "成功",
+							icon: "none"
+						})
+					}
+				  });
+			},
+			send_usb(mode) {
+				var that = this;
+				var params = {
+						"mode": mode
+					};
+				if(mode == "kb") {
+					params["context"] = that.ench2Unicode(that.input_val[5]);
+				}
+				else {
+					params["speed"] = that.input_val[6];
+				}
+				// console.log(params["context"]);
+				uni.request({
+					url: that.product_id?(that.direction + "/datapoint/synccmds?timeout=5&product_id=" + that.product_id + "&device_name=" + that.hid_usb):(that.direction_old + "/cmds?device_id=" + that.hid_usb),
+					header: that.product_id?{"authorization": that.api_key}:{ "api-key": that.api_key},
+					data: params,
 					method:'POST',//请求方式  或GET，必须为大写
 					success: res => {
 						uni.showToast({
@@ -431,31 +463,6 @@ export default {
 				}
 				return unicode;
 			},
-			send_usb(mode) {
-				var that = this;
-				var params = {
-						"mode": mode
-					};
-				if(mode == "kb") {
-					params["context"] = that.ench2Unicode(that.input_val[5]);
-				}
-				else {
-					params["speed"] = that.input_val[6];
-				}
-				// console.log(params["context"]);
-				uni.request({
-					url: that.product_id?(that.direction + "/datapoint/synccmds?timeout=5&product_id=" + that.product_id + "&device_name=" + that.hid_usb):(that.direction_old + "/cmds?device_id=" + that.hid_usb),
-					header: that.product_id?{"authorization": that.api_key}:{ "api-key": that.api_key},
-					data: params,
-					method:'POST',//请求方式  或GET，必须为大写
-					success: res => {
-						uni.showToast({
-							title: "成功",
-							icon: "none"
-						})
-					}
-				  });
-			},
 			// 加载缓存
 			load_storage(){
 				var that = this;
@@ -466,6 +473,8 @@ export default {
 				that.hid_usb = uni.getStorageSync("hid_usb");
 				that.device_type = uni.getStorageSync("device_type");
 				that.product_id = uni.getStorageSync("product_id");
+				that.config_json = JSON.parse(uni.getStorageSync("config_json"));
+				that.config_json = that.config_json?that.config_json:{};
 			},
 			//修改信息
 			change() {
@@ -478,12 +487,18 @@ export default {
 				if(that.input_val[4]){uni.setStorageSync("hid_usb", that.input_val[4]);}
 				if(that.input_val[7]){uni.setStorageSync("device_type", that.input_val[7]);}
 				uni.setStorageSync("product_id", that.input_val[8]);
+				if(that.input_val[9]){
+					uni.setStorageSync("config_json", that.input_val[9]);
+					config_json = JSON.parse(that.input_val[9]);
+				}
 				// console.log("set done and get:", uni.getStorageSync("comments"));
 				// this.check_main();
 				uni.showToast({
 					title: "成功",
 					icon: "none"
 				})
+				// TODO 发送alert到k-v
+
 			},
 			// 加载缓存显示
 			init_info() {
@@ -496,6 +511,7 @@ export default {
 				that.input_val[4] = that.hid_usb;
 				that.input_val[7] = that.device_type;
 				that.input_val[8] = that.product_id;
+				that.input_val[9] = JSON.stringify(that.config_json);
 				that.$forceUpdate();
 			},
 			// 复制id
@@ -607,7 +623,6 @@ export default {
 			// 配置导出和导入
 			export_info(){
 				this.info_dump = (JSON.stringify(this.input_val));
-				console.log(this.info_dump);
 			},
 			load_info(){
 				this.input_val = (JSON.parse(this.info_dump));
@@ -635,7 +650,7 @@ export default {
 						})
 					}
 				});
-				that.send(device_id, "st", "st", value);
+				that.send(device_id, key_name, action=key_name, value);
 			},
 			delay_fresh(delay_time=2000){
 				var that = this;
