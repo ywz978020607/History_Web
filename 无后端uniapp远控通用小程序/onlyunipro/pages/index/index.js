@@ -473,8 +473,8 @@ export default {
 				that.hid_usb = uni.getStorageSync("hid_usb");
 				that.device_type = uni.getStorageSync("device_type");
 				that.product_id = uni.getStorageSync("product_id");
-				that.config_json = JSON.parse(uni.getStorageSync("config_json"));
-				that.config_json = that.config_json?that.config_json:{};
+				that.config_json = uni.getStorageSync("config_json");
+				that.config_json = that.config_json?JSON.parse(that.config_json):{};
 			},
 			//修改信息
 			change() {
