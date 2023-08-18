@@ -1557,7 +1557,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8934,7 +8934,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8955,14 +8955,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9058,7 +9058,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9752,6 +9752,8 @@ var _default = {
       // 0-设备ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
       // 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型, 4-地图类型定时工作版]，
       // 8-产品id, 9-补充配置的字符串输入
+      input_st_time: [],
+      // 动态扩展
       config_json: {},
       // 补充配置
       temp_data: {},
@@ -10005,26 +10007,25 @@ var _default = {
                       var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
                       device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
                       device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
-                      device_data["datastreams"][in_idx]["value"]["st_time"] = '未设置'; //默认
-                      var st_time_idx = in_idx;
+
+                      // device_data["datastreams"][in_idx]["value"]["st_time"] = ''; //默认
+                      that.input_st_time[idx] = ""; //默认
+
                       for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length; in_in_idx++) {
                         // 添加wifi名
                         if (device_data["datastreams"][in_in_idx]["id"] == "ssid") {
                           if (device_data["datastreams"][in_in_idx]["at"] == device_data["datastreams"][in_idx]["at"]) {
-                            device_data["datastreams"][st_time_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
+                            device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
                           }
                         }
                         // 添加电量数据
                         if (device_data["datastreams"][in_in_idx]["id"] == "b") {
-                          device_data["datastreams"][st_time_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
+                          device_data["datastreams"][in_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
                         }
 
-                        // // 扫描并添加自身st_time
-                        // if(device_data["datastreams"][in_in_idx]["id"] == "st"){
-                        // 	device_data["datastreams"][st_time_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
-                        // }
+                        // // 扫描并添加自身st_time -- 后置-单独走kv
                       }
-                      // 额外获取离线数据
+                      // 额外获取离线数据 k-v
                       uni.request({
                         url: that.direction_old + "/devices/1097281683/datapoints?datastream_id=st%" + that.product_id + "%" + device_data["title"] + "&limit=1",
                         header: {
@@ -10033,7 +10034,8 @@ var _default = {
                         method: 'GET',
                         success: function success(res_old) {
                           if (res_old.data["data"]["count"] > 0) {
-                            device_data["datastreams"][st_time_idx]["value"]["st_time"] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
+                            // device_data["datastreams"][in_idx]["value"]["st_time"] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
+                            that.input_st_time[idx] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
                           }
                         }
                       });
@@ -10068,7 +10070,10 @@ var _default = {
                       var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
                       device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
                       device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
-                      device_data["datastreams"][in_idx]["value"]["st_time"] = '未设置'; //默认
+
+                      // device_data["datastreams"][in_idx]["value"]["st_time"] = ''; //默认
+                      that.input_st_time[idx] = ""; //默认
+
                       for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length; in_in_idx++) {
                         // 添加wifi名
                         if (device_data["datastreams"][in_in_idx]["id"] == "ssid") {
@@ -10084,7 +10089,8 @@ var _default = {
 
                         // 添加st_time
                         if (device_data["datastreams"][in_in_idx]["id"] == "st") {
-                          device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
+                          // device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
+                          that.input_st_time[idx] = device_data["datastreams"][in_in_idx]["value"];
                         }
                       }
                     }
@@ -10366,6 +10372,7 @@ var _default = {
     },
     // 设定离线变量
     set_onenet_http: function set_onenet_http(device_id, key_name, value) {
+      console.log(key_name, value);
       var that = this;
       var datastreams = [];
       datastreams.push({

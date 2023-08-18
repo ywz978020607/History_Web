@@ -141,9 +141,11 @@
 										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
 										<div class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;" v-if="each['device_type'] == 4">
-											<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											<input v-model="data_each.value.st_time" style="width: 25%;border:0.5px solid #378888; white-space: pre-wrap;" type="text">
-											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time);">修改定时时长(/分钟)</button>
+											<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+											<!-- <input v-model="data_each.value.st_time" placeholder="未设置 纯数字" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text"> -->
+											<input v-model="input_st_time[index]" placeholder="未设置 纯数字" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text">
+											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', input_st_time[index]);">修改定时时长(/分钟)</button>
+											<!-- <button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time);">修改定时时长(/分钟)</button> -->
 										</div>
 										<div class="flex" style="white-space: pre-wrap;">
 											<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
