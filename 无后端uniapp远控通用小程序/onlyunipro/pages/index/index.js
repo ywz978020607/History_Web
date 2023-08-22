@@ -492,7 +492,7 @@ export default {
 				uni.setStorageSync("product_id", that.input_val[8]);
 				if(that.input_val[9]){
 					uni.setStorageSync("config_json", that.input_val[9]);
-					config_json = JSON.parse(that.input_val[9]);
+					that.config_json = JSON.parse(that.input_val[9]);
 				}
 				// console.log("set done and get:", uni.getStorageSync("comments"));
 				// this.check_main();
