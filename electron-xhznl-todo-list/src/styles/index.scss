@@ -1,0 +1,62 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  overflow: hidden;
+}
+* {
+  padding: 0;
+  margin: 0;
+  color: #ffffff;
+}
+*::selection {
+  background: rgba($color: #ffffff, $alpha: 0.3);
+}
+
+.scrollbar-x::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 1px; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 5px;
+}
+.scrollbar-y::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  display: none;
+  border-radius: 5px;
+  background-color: rgba($color: #ffffff, $alpha: 0.2);
+}
+.scrollbar::-webkit-scrollbar-track {
+  display: none;
+}
+
+/* fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.28s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all 0.28s;
+}
+
+.fade-transform-enter {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
