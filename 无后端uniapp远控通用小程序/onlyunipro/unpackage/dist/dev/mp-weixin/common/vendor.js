@@ -14,13 +14,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var objectKeys = ['qy', 'env', 'error', 'version', 'lanDebug', 'cloud', 'serviceMarket', 'router', 'worklet'];
+var objectKeys = ['qy', 'env', 'error', 'version', 'lanDebug', 'cloud', 'serviceMarket', 'router', 'worklet', '__webpack_require_UNI_MP_PLUGIN__'];
+var singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
 var target = typeof globalThis !== 'undefined' ? globalThis : function () {
   return this;
 }();
 var key = ['w', 'x'].join('');
 var oldWx = target[key];
+var launchOption = oldWx.getLaunchOptionsSync ? oldWx.getLaunchOptionsSync() : null;
 function isWxKey(key) {
+  if (launchOption && launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
+    return false;
+  }
   return objectKeys.indexOf(key) > -1 || typeof oldWx[key] === 'function';
 }
 function initWx() {
@@ -243,22 +248,22 @@ function removeInterceptor(method, option) {
     removeInterceptorHook(globalInterceptors, method);
   }
 }
-function wrapperHook(hook) {
+function wrapperHook(hook, params) {
   return function (data) {
-    return hook(data) || data;
+    return hook(data, params) || data;
   };
 }
 function isPromise(obj) {
   return !!obj && ((0, _typeof2.default)(obj) === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
 }
-function queue(hooks, data) {
+function queue(hooks, data, params) {
   var promise = false;
   for (var i = 0; i < hooks.length; i++) {
     var hook = hooks[i];
     if (promise) {
-      promise = Promise.resolve(wrapperHook(hook));
+      promise = Promise.resolve(wrapperHook(hook, params));
     } else {
-      var res = hook(data);
+      var res = hook(data, params);
       if (isPromise(res)) {
         promise = Promise.resolve(res);
       }
@@ -281,7 +286,7 @@ function wrapperOptions(interceptor) {
     if (Array.isArray(interceptor[name])) {
       var oldCallback = options[name];
       options[name] = function callbackInterceptor(res) {
-        queue(interceptor[name], res).then(function (res) {
+        queue(interceptor[name], res, options).then(function (res) {
           /* eslint-disable no-mixed-operators */
           return isFn(oldCallback) && oldCallback(res) || res;
         });
@@ -330,7 +335,8 @@ function invokeApi(method, api, options) {
     if (Array.isArray(interceptor.invoke)) {
       var res = queue(interceptor.invoke, options);
       return res.then(function (options) {
-        return api.apply(void 0, [wrapperOptions(interceptor, options)].concat(params));
+        // 重新访问 getApiInterceptorHooks, 允许 invoke 中再次调用 addInterceptor,removeInterceptor
+        return api.apply(void 0, [wrapperOptions(getApiInterceptorHooks(method), options)].concat(params));
       });
     } else {
       return api.apply(void 0, [wrapperOptions(interceptor, options)].concat(params));
@@ -354,7 +360,7 @@ var promiseInterceptor = {
     });
   }
 };
-var SYNC_API_RE = /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
+var SYNC_API_RE = /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 var CONTEXT_API_RE = /^create|Manager$/;
 
 // Context例外情况
@@ -734,6 +740,8 @@ function populateParameters(result) {
     deviceOrientation = result.deviceOrientation;
   // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
 
+  var extraParam = {};
+
   // osName osVersion
   var osName = '';
   var osVersion = '';
@@ -772,8 +780,8 @@ function populateParameters(result) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "3.6.18",
-    uniRuntimeVersion: "3.6.18",
+    uniCompileVersion: "3.8.7",
+    uniRuntimeVersion: "3.8.7",
     uniPlatform: undefined || "mp-weixin",
     deviceBrand: deviceBrand,
     deviceModel: model,
@@ -798,7 +806,7 @@ function populateParameters(result) {
     browserName: undefined,
     browserVersion: undefined
   };
-  Object.assign(result, parameters);
+  Object.assign(result, parameters, extraParam);
 }
 function getGetDeviceType(result, model) {
   var deviceType = result.deviceType || 'phone';
@@ -917,6 +925,17 @@ var getAppAuthorizeSetting = {
 
 // import navigateTo from 'uni-helpers/navigate-to'
 
+var compressImage = {
+  args: function args(fromArgs) {
+    // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+    if (fromArgs.compressedHeight && !fromArgs.compressHeight) {
+      fromArgs.compressHeight = fromArgs.compressedHeight;
+    }
+    if (fromArgs.compressedWidth && !fromArgs.compressWidth) {
+      fromArgs.compressWidth = fromArgs.compressedWidth;
+    }
+  }
+};
 var protocols = {
   redirectTo: redirectTo,
   // navigateTo,  // 由于在微信开发者工具的页面参数，会显示__id__参数，因此暂时关闭mp-weixin对于navigateTo的AOP
@@ -927,7 +946,8 @@ var protocols = {
   getAppBaseInfo: getAppBaseInfo,
   getDeviceInfo: getDeviceInfo,
   getWindowInfo: getWindowInfo,
-  getAppAuthorizeSetting: getAppAuthorizeSetting
+  getAppAuthorizeSetting: getAppAuthorizeSetting,
+  compressImage: compressImage
 };
 var todos = ['vibrate', 'preloadPage', 'unPreloadPage', 'loadSubPackage'];
 var canIUses = [];
@@ -1360,6 +1380,19 @@ function toSkip(obj) {
   }
   return obj;
 }
+var WORKLET_RE = /_(.*)_worklet_factory_/;
+function initWorkletMethods(mpMethods, vueMethods) {
+  if (vueMethods) {
+    Object.keys(vueMethods).forEach(function (name) {
+      var matches = name.match(WORKLET_RE);
+      if (matches) {
+        var workletName = matches[1];
+        mpMethods[name] = vueMethods[name];
+        mpMethods[workletName] = vueMethods[workletName];
+      }
+    });
+  }
+}
 var MPPage = Page;
 var MPComponent = Component;
 var customizeRE = /:/g;
@@ -1524,7 +1557,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -1921,14 +1954,10 @@ function handleEvent(event) {
   }
 }
 var eventChannels = {};
-var eventChannelStack = [];
 function getEventChannel(id) {
-  if (id) {
-    var eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel;
-  }
-  return eventChannelStack.shift();
+  var eventChannel = eventChannels[id];
+  delete eventChannels[id];
+  return eventChannel;
 }
 var hooks = ['onShow', 'onHide', 'onError', 'onPageNotFound', 'onThemeChange', 'onUnhandledRejection'];
 function initEventChannel() {
@@ -1950,38 +1979,54 @@ function initEventChannel() {
 function initScopedSlotsParams() {
   var center = {};
   var parents = {};
-  _vue.default.prototype.$hasScopedSlotsParams = function (vueId) {
-    var has = center[vueId];
-    if (!has) {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', function () {
-        delete parents[vueId];
-      });
-    }
-    return has;
-  };
-  _vue.default.prototype.$getScopedSlotsParams = function (vueId, name, key) {
-    var data = center[vueId];
-    if (data) {
-      var object = data[name] || {};
-      return key ? object[key] : object;
-    } else {
-      parents[vueId] = this;
-      this.$on('hook:destroyed', function () {
-        delete parents[vueId];
-      });
-    }
-  };
-  _vue.default.prototype.$setScopedSlotsParams = function (name, value) {
+  function currentId(fn) {
     var vueIds = this.$options.propsData.vueId;
     if (vueIds) {
       var vueId = vueIds.split(',')[0];
-      var object = center[vueId] = center[vueId] || {};
-      object[name] = value;
+      fn(vueId);
+    }
+  }
+  _vue.default.prototype.$hasSSP = function (vueId) {
+    var slot = center[vueId];
+    if (!slot) {
+      parents[vueId] = this;
+      this.$on('hook:destroyed', function () {
+        delete parents[vueId];
+      });
+    }
+    return slot;
+  };
+  _vue.default.prototype.$getSSP = function (vueId, name, needAll) {
+    var slot = center[vueId];
+    if (slot) {
+      var params = slot[name] || [];
+      if (needAll) {
+        return params;
+      }
+      return params[0];
+    }
+  };
+  _vue.default.prototype.$setSSP = function (name, value) {
+    var index = 0;
+    currentId.call(this, function (vueId) {
+      var slot = center[vueId];
+      var params = slot[name] = slot[name] || [];
+      params.push(value);
+      index = params.length - 1;
+    });
+    return index;
+  };
+  _vue.default.prototype.$initSSP = function () {
+    currentId.call(this, function (vueId) {
+      center[vueId] = {};
+    });
+  };
+  _vue.default.prototype.$callSSP = function () {
+    currentId.call(this, function (vueId) {
       if (parents[vueId]) {
         parents[vueId].$forceUpdate();
       }
-    }
+    });
   };
   _vue.default.mixin({
     destroyed: function destroyed() {
@@ -2133,6 +2178,7 @@ function parseBaseComponent(vueComponentOptions) {
     vueOptions = _initVueComponent2[1];
   var options = _objectSpread({
     multipleSlots: true,
+    // styleIsolation: 'apply-shared',
     addGlobalClass: true
   }, vueOptions.options || {});
   {
@@ -2245,6 +2291,9 @@ function parseBasePage(vuePageOptions) {
   };
   {
     initUnknownHooks(pageOptions.methods, vuePageOptions, ['onReady']);
+  }
+  {
+    initWorkletMethods(pageOptions.methods, vueOptions.methods);
   }
   return pageOptions;
 }
@@ -2375,7 +2424,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
       uni[name] = promisify(name, todoApis[name]);
     });
     Object.keys(extraApi).forEach(function (name) {
-      uni[name] = promisify(name, todoApis[name]);
+      uni[name] = promisify(name, extraApi[name]);
     });
   }
   Object.keys(eventApi).forEach(function (name) {
@@ -2794,7 +2843,6 @@ var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runt
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
-var isArray = Array.isArray;
 var isObject = function isObject(val) {
   return val !== null && (0, _typeof2.default)(val) === 'object';
 };
@@ -2873,7 +2921,7 @@ function parse(format, _ref) {
 function compile(tokens, values) {
   var compiled = [];
   var index = 0;
-  var mode = isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
+  var mode = Array.isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
   if (mode === 'unknown') {
     return compiled;
   }
@@ -2939,6 +2987,10 @@ function normalizeLocale(locale, messages) {
     return locale;
   }
   locale = locale.toLowerCase();
+  if (locale === 'chinese') {
+    // 支付宝
+    return LOCALE_ZH_HANS;
+  }
   if (locale.indexOf('zh') === 0) {
     if (locale.indexOf('-hans') > -1) {
       return LOCALE_ZH_HANS;
@@ -2951,7 +3003,11 @@ function normalizeLocale(locale, messages) {
     }
     return LOCALE_ZH_HANS;
   }
-  var lang = startsWith(locale, [LOCALE_EN, LOCALE_FR, LOCALE_ES]);
+  var locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+  if (messages && Object.keys(messages).length > 0) {
+    locales = Object.keys(messages);
+  }
+  var lang = startsWith(locale, locales);
   if (lang) {
     return lang;
   }
@@ -3258,7 +3314,7 @@ function compileJsonObj(jsonObj, localeValues, delimiters) {
   return jsonObj;
 }
 function walkJsonObj(jsonObj, walk) {
-  if (isArray(jsonObj)) {
+  if (Array.isArray(jsonObj)) {
     for (var i = 0; i < jsonObj.length; i++) {
       if (walk(jsonObj, i)) {
         return true;
@@ -3350,7 +3406,7 @@ module.exports = _createClass, module.exports.__esModule = true, module.exports[
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global) {/*!
  * Vue.js v2.6.11
- * (c) 2014-2022 Evan You
+ * (c) 2014-2023 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -8878,7 +8934,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8899,14 +8955,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9002,7 +9058,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"摸鱼大鸽物联网","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9360,12 +9416,13 @@ var LIFECYCLE_HOOKS$1 = [
     'onNavigationBarSearchInputChanged',
     'onNavigationBarSearchInputConfirmed',
     'onNavigationBarSearchInputClicked',
+    'onUploadDouyinVideo',
+    'onNFCReadMessage',
     //Component
     // 'onReady', // 兼容旧版本，应该移除该事件
     'onPageShow',
     'onPageHide',
-    'onPageResize',
-    'onUploadDouyinVideo'
+    'onPageResize'
 ];
 function lifecycleMixin$1(Vue) {
 
@@ -9481,6 +9538,9 @@ function normalizeComponent (
   }
   // fixed by xxxxxx renderjs
   if (renderjs) {
+    if(typeof renderjs.beforeCreate === 'function'){
+			renderjs.beforeCreate = [renderjs.beforeCreate]
+		}
     (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
       this[renderjs.__module] = this
     });
@@ -9687,11 +9747,15 @@ var _default = {
       charts_len: 7,
       //
       info_dump: '',
-      input_val: [null, null, null, null, null, null, 5, null, null],
+      input_val: [null, null, null, null, null, null, 5, null, null, null],
       //初始化, null可缺省
       // 0-设备ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
       // 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型, 4-地图类型定时工作版]，
-      // 8-产品id
+      // 8-产品id, 9-补充配置的字符串输入
+      input_st_time: [],
+      // 动态扩展
+      config_json: {},
+      // 补充配置
       temp_data: {},
       direction: "https://iot-api.heclouds.com",
       // "http://183.230.40.34"
@@ -9808,6 +9872,10 @@ var _default = {
       console.log('触发下拉刷新了');
       this.fresh();
       uni.stopPullDownRefresh();
+    },
+    getDefaultDict: function getDefaultDict(input_dict, input_key) {
+      var default_val = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+      return input_dict[input_key] ? input_dict[input_key] : default_val ? default_val : input_key;
     },
     check_main: function check_main() {
       var seen_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
@@ -9939,21 +10007,25 @@ var _default = {
                       var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
                       device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
                       device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
-                      device_data["datastreams"][in_idx]["value"]["st_time"] = '未设置'; //默认
-                      var st_time_idx = in_idx;
+
+                      // device_data["datastreams"][in_idx]["value"]["st_time"] = ''; //默认
+                      that.input_st_time[idx] = ""; //默认
+
                       for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length; in_in_idx++) {
                         // 添加wifi名
                         if (device_data["datastreams"][in_in_idx]["id"] == "ssid") {
                           if (device_data["datastreams"][in_in_idx]["at"] == device_data["datastreams"][in_idx]["at"]) {
-                            device_data["datastreams"][st_time_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
+                            device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
                           }
                         }
-                        // // 扫描并添加自身st_time
-                        // if(device_data["datastreams"][in_in_idx]["id"] == "st"){
-                        // 	device_data["datastreams"][st_time_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
-                        // }
+                        // 添加电量数据
+                        if (device_data["datastreams"][in_in_idx]["id"] == "b") {
+                          device_data["datastreams"][in_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
+                        }
+
+                        // // 扫描并添加自身st_time -- 后置-单独走kv
                       }
-                      // 额外获取离线数据
+                      // 额外获取离线数据 k-v
                       uni.request({
                         url: that.direction_old + "/devices/1097281683/datapoints?datastream_id=st%" + that.product_id + "%" + device_data["title"] + "&limit=1",
                         header: {
@@ -9962,7 +10034,8 @@ var _default = {
                         method: 'GET',
                         success: function success(res_old) {
                           if (res_old.data["data"]["count"] > 0) {
-                            device_data["datastreams"][st_time_idx]["value"]["st_time"] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
+                            // device_data["datastreams"][in_idx]["value"]["st_time"] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
+                            that.input_st_time[idx] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
                           }
                         }
                       });
@@ -9997,7 +10070,10 @@ var _default = {
                       var translate_coor = that.translate_gps(device_data["datastreams"][in_idx]["value"]["lat"], device_data["datastreams"][in_idx]["value"]["lon"]);
                       device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
                       device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
-                      device_data["datastreams"][in_idx]["value"]["st_time"] = '未设置'; //默认
+
+                      // device_data["datastreams"][in_idx]["value"]["st_time"] = ''; //默认
+                      that.input_st_time[idx] = ""; //默认
+
                       for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length; in_in_idx++) {
                         // 添加wifi名
                         if (device_data["datastreams"][in_in_idx]["id"] == "ssid") {
@@ -10005,9 +10081,16 @@ var _default = {
                             device_data["datastreams"][in_idx]["value"]["ssid"] = device_data["datastreams"][in_in_idx]["value"];
                           }
                         }
+
+                        // 添加电量信息
+                        if (device_data["datastreams"][in_in_idx]["id"] == "b") {
+                          device_data["datastreams"][in_idx]["value"]["battery"] = device_data["datastreams"][in_in_idx]["value"];
+                        }
+
                         // 添加st_time
                         if (device_data["datastreams"][in_in_idx]["id"] == "st") {
-                          device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
+                          // device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
+                          that.input_st_time[idx] = device_data["datastreams"][in_in_idx]["value"];
                         }
                       }
                     }
@@ -10023,6 +10106,7 @@ var _default = {
         console.log("check main error", e);
       }
     },
+    // 通过onenet下发mqtt指令到硬件 - synccmd
     send: function send(device_id, key_name, action) {
       var period = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
       var that = this;
@@ -10039,6 +10123,35 @@ var _default = {
           "action": action,
           "period": period || that.trigger_time
         },
+        method: 'POST',
+        //请求方式  或GET，必须为大写
+        success: function success(res) {
+          uni.showToast({
+            title: "成功",
+            icon: "none"
+          });
+        }
+      });
+    },
+    send_usb: function send_usb(mode) {
+      var that = this;
+      var params = {
+        "mode": mode
+      };
+      if (mode == "kb") {
+        params["context"] = that.ench2Unicode(that.input_val[5]);
+      } else {
+        params["speed"] = that.input_val[6];
+      }
+      // console.log(params["context"]);
+      uni.request({
+        url: that.product_id ? that.direction + "/datapoint/synccmds?timeout=5&product_id=" + that.product_id + "&device_name=" + that.hid_usb : that.direction_old + "/cmds?device_id=" + that.hid_usb,
+        header: that.product_id ? {
+          "authorization": that.api_key
+        } : {
+          "api-key": that.api_key
+        },
+        data: params,
         method: 'POST',
         //请求方式  或GET，必须为大写
         success: function success(res) {
@@ -10073,35 +10186,6 @@ var _default = {
       }
       return unicode;
     },
-    send_usb: function send_usb(mode) {
-      var that = this;
-      var params = {
-        "mode": mode
-      };
-      if (mode == "kb") {
-        params["context"] = that.ench2Unicode(that.input_val[5]);
-      } else {
-        params["speed"] = that.input_val[6];
-      }
-      // console.log(params["context"]);
-      uni.request({
-        url: that.product_id ? that.direction + "/datapoint/synccmds?timeout=5&product_id=" + that.product_id + "&device_name=" + that.hid_usb : that.direction_old + "/cmds?device_id=" + that.hid_usb,
-        header: that.product_id ? {
-          "authorization": that.api_key
-        } : {
-          "api-key": that.api_key
-        },
-        data: params,
-        method: 'POST',
-        //请求方式  或GET，必须为大写
-        success: function success(res) {
-          uni.showToast({
-            title: "成功",
-            icon: "none"
-          });
-        }
-      });
-    },
     // 加载缓存
     load_storage: function load_storage() {
       var that = this;
@@ -10112,6 +10196,8 @@ var _default = {
       that.hid_usb = uni.getStorageSync("hid_usb");
       that.device_type = uni.getStorageSync("device_type");
       that.product_id = uni.getStorageSync("product_id");
+      that.config_json = uni.getStorageSync("config_json");
+      that.config_json = that.config_json ? JSON.parse(that.config_json) : {};
     },
     //修改信息
     change: function change() {
@@ -10136,12 +10222,17 @@ var _default = {
         uni.setStorageSync("device_type", that.input_val[7]);
       }
       uni.setStorageSync("product_id", that.input_val[8]);
+      if (that.input_val[9]) {
+        uni.setStorageSync("config_json", that.input_val[9]);
+        that.config_json = JSON.parse(that.input_val[9]);
+      }
       // console.log("set done and get:", uni.getStorageSync("comments"));
       // this.check_main();
       uni.showToast({
         title: "成功",
         icon: "none"
       });
+      // TODO 发送alert到k-v
     },
     // 加载缓存显示
     init_info: function init_info() {
@@ -10154,6 +10245,7 @@ var _default = {
       that.input_val[4] = that.hid_usb;
       that.input_val[7] = that.device_type;
       that.input_val[8] = that.product_id;
+      that.input_val[9] = JSON.stringify(that.config_json);
       that.$forceUpdate();
     },
     // 复制id
@@ -10274,13 +10366,13 @@ var _default = {
     // 配置导出和导入
     export_info: function export_info() {
       this.info_dump = JSON.stringify(this.input_val);
-      console.log(this.info_dump);
     },
     load_info: function load_info() {
       this.input_val = JSON.parse(this.info_dump);
     },
     // 设定离线变量
     set_onenet_http: function set_onenet_http(device_id, key_name, value) {
+      console.log(key_name, value);
       var that = this;
       var datastreams = [];
       datastreams.push({
@@ -10308,7 +10400,7 @@ var _default = {
           });
         }
       });
-      that.send(device_id, "st", "st", value);
+      that.send(device_id, key_name, key_name, value);
     },
     delay_fresh: function delay_fresh() {
       var delay_time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2000;
