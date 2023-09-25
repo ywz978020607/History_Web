@@ -141,12 +141,17 @@
 										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
 										<div class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;" v-if="each['device_type'] == 4">
-											<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
-											<!-- <input v-model="data_each.value.st_time" placeholder="未设置 纯数字" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text"> -->
-											<input v-model="input_st_time[index]" placeholder="未设置 纯数字" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text">
-											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', input_st_time[index]);">修改定时时长(/分钟)</button>
-											<!-- <button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time);">修改定时时长(/分钟)</button> -->
+											<input v-model="data_each.value.st_time[0]" placeholder="上报间隔-0关" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text"/>
+											<button v-if="data_each.value.st_time[1] != null" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="data_each.value.st_time = [data_each.value.st_time[0]]; set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());delay_fresh(200);">关快查</button>	
+											<button v-else class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="data_each.value.st_time = [data_each.value.st_time[0]==''?0:data_each.value.st_time[0], 1.0, 0]; set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());delay_fresh(200);">开快查</button>	
+											<input v-if="data_each.value.st_time[1] != null" v-model="data_each.value.st_time[1]" placeholder="快查间隔" style="width: 30%;border:0.5px solid #378888;" type="text">
 										</div>
+										<div class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;">
+											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());">修改定时数据</button>
+											<button v-if="data_each.value.st_time[1] != null && data_each.value.st_time[2]!=1" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="data_each.value.st_time[2] = 1; set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join()); delay_fresh(200);">立即查</button>	
+											<button v-else-if="data_each.value.st_time[1] != null" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;">刷新等待</button>  
+										</div>
+
 										<div class="flex" style="white-space: pre-wrap;">
 											<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
 											-
@@ -197,6 +202,11 @@
 
 							<label style="float:left">HID页面-设备名(HID专用, 可选)：</label> <input v-model="input_val[4]" style="border:0.5px solid #378888; white-space: pre-wrap;">
 							<span v-html="'<br>'"></span>
+
+							
+							<label style="float:left">个性化配置：</label>
+							<input v-model="input_val[9]" style="border:0.5px solid #378888; white-space: pre-wrap;">
+
 							<button class="btn btn-primary" @click="change()" style="display: flex;flex-direction: column;align-items: center;">新增/修改onenet配置</button>
 
 							<span v-html="'<br>'"></span><span v-html="'<br>'"></span>
@@ -205,6 +215,7 @@
 								<span v-html="'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
 								<button class="btn btn-secondary" @click="load_info();">一键导入配置</button>
 							</div>
+							<label style="float:left">一键配置内容: </label>
 							<input maxlength="500" v-model="info_dump" style="border:0.5px solid #378888; white-space: pre-wrap;">
 						</div>
 

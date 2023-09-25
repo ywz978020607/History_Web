@@ -55,7 +55,6 @@ export default {
 			// 0-设备ids，1-备注，2-apikey，3-触发秒数，4-hidusbid, [5-hidusb文本，6-hidusb速度]
 			// 7-类型[0-全IO,1-剪裁IO,2-红外控制,3-地图类型, 4-地图类型定时工作版]，
 			// 8-产品id, 9-补充配置的字符串输入
-			input_st_time: [], // 动态扩展
 			config_json: {}, // 补充配置
 			temp_data: {},
 			//#ifndef H5
@@ -301,9 +300,7 @@ export default {
 												device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
 												device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
 
-												// device_data["datastreams"][in_idx]["value"]["st_time"] = ''; //默认
-												that.input_st_time[idx] = ""; //默认
-												
+												device_data["datastreams"][in_idx]["value"]["st_time"] = ['']; //默认
 												for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length;in_in_idx++){
 													// 添加wifi名
 													if(device_data["datastreams"][in_in_idx]["id"] == "ssid"){
@@ -325,8 +322,8 @@ export default {
 													method:'GET',
 													success: res_old => {
 														if(res_old.data["data"]["count"] > 0){
-															// device_data["datastreams"][in_idx]["value"]["st_time"] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
-															that.input_st_time[idx] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"];
+															device_data["datastreams"][in_idx]["value"]["st_time"] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"].split(',');
+															// that.input_st_time[idx] = res_old.data["data"]["datastreams"][0]["datapoints"][0]["value"].split(',');
 														}
 													}
 												});
@@ -358,9 +355,7 @@ export default {
 												device_data["datastreams"][in_idx]["value"]["lat"] = translate_coor.latitude;
 												device_data["datastreams"][in_idx]["value"]["lon"] = translate_coor.longitude;
 
-												// device_data["datastreams"][in_idx]["value"]["st_time"] = ''; //默认
-												that.input_st_time[idx] = ""; //默认
-												
+												device_data["datastreams"][in_idx]["value"]["st_time"] = ['']; //默认
 												for (var in_in_idx = 0; in_in_idx < device_data["datastreams"].length;in_in_idx++){
 													// 添加wifi名
 													if(device_data["datastreams"][in_in_idx]["id"] == "ssid"){
@@ -376,8 +371,8 @@ export default {
 
 													// 添加st_time
 													if(device_data["datastreams"][in_in_idx]["id"] == "st"){
-														// device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"];
-														that.input_st_time[idx] = device_data["datastreams"][in_in_idx]["value"];
+														device_data["datastreams"][in_idx]["value"]["st_time"] = device_data["datastreams"][in_in_idx]["value"].split(',');
+														// that.input_st_time[idx] = device_data["datastreams"][in_in_idx]["value"].split(',');
 													}
 												}
 											}
