@@ -117,10 +117,10 @@
 								</div>
 
 								<!-- 地图显示 -->
-								<div v-if="each['device_type'] == 3 || each['device_type'] == 4" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
+								<div v-if="each['device_type'] == 3 || each['device_type'] == 4|| each['device_type'] == 5" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
 									<!-- {{each.datastreams[0]["value"]["lat"]}} -->
 									<div v-for="(data_each,data_index) in each.datastreams" :obj="data_each.id" style="width: 100%; display: flex;flex-direction: column;align-items: center;">
-										<div v-if="each['device_type'] == 4 && (data_each['id'].slice(0,4)=='data' || data_each['id'].slice(0,2)=='in')" style="display: flex;flex-direction: column;align-items: center;">
+										<div v-if="(each['device_type'] == 4 || each['device_type'] == 5) && (data_each['id'].slice(0,4)=='data' || data_each['id'].slice(0,2)=='in')" style="display: flex;flex-direction: column;align-items: center;">
 											<p>{{data_each["id"]}}: {{data_each["value"]}} {{data_each["at"].slice(0,10)+' ' +data_each["at"].slice(11,19)}}</p>
 											<button v-if="data_each['id'].slice(0,4)=='data'" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="send(key.substr(1,),data_each['id'], 't_off');delay_fresh();">触低发送</button>
 										</div>
@@ -140,13 +140,18 @@
 											<!-- #endif -->
 										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
-										<div class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;" v-if="each['device_type'] == 4">
+										<div v-if="each['device_type'] == 4" class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;">
+											<input v-model="data_each.value.st_time[0]" placeholder="上报间隔-0关" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text"/>
+											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());">修改定时数据</button>
+										</div>
+										
+										<div v-if="each['device_type'] == 5" class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;">
 											<input v-model="data_each.value.st_time[0]" placeholder="上报间隔-0关" style="width: 50%;border:0.5px solid #378888; white-space: pre-wrap;" type="text"/>
 											<button v-if="data_each.value.st_time[1] != null" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="data_each.value.st_time = [data_each.value.st_time[0]]; set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());delay_fresh(200);">关快查</button>	
 											<button v-else class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="data_each.value.st_time = [data_each.value.st_time[0]==''?0:data_each.value.st_time[0], 1.0, 0]; set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());delay_fresh(200);">开快查</button>	
 											<input v-if="data_each.value.st_time[1] != null" v-model="data_each.value.st_time[1]" placeholder="快查间隔" style="width: 30%;border:0.5px solid #378888;" type="text">
 										</div>
-										<div class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;">
+										<div v-if="each['device_type'] == 5" class="flex" style="white-space: pre-wrap; text-align:center;vertical-align:middel;">
 											<button class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join());">修改定时数据</button>
 											<button v-if="data_each.value.st_time[1] != null && data_each.value.st_time[2]!=1" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;" @click="data_each.value.st_time[2] = 1; set_onenet_http(key.substr(1,), 'st', data_each.value.st_time.join()); delay_fresh(200);">立即查</button>	
 											<button v-else-if="data_each.value.st_time[1] != null" class="btn btn-secondary" style="height: 50rpx;font-size: 24rpx;">刷新等待</button>  
