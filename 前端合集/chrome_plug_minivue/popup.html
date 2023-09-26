@@ -15,11 +15,41 @@
 	<script type="text/javascript" src="js/vue.global.js"></script>
 </head>
 <body>
-	<h1>kernel分析</h1>
-	<div id="app">
-		{{info}}
+<h1>kernel分析</h1>
+<div id="app">
+
+	<div v-if="seen_id==0">
+		<button @click="start();">刷新</button>
+		<table>
+			<tr>
+				<td>姓名</td><td>数量</td><td>详情</td>
+			</tr>
+			<tr v-for="key in Object.keys(info).sort(function(a,b){
+				return info[b].length - info[a].length;
+			})">
+				<td>{{key}}</td><td>{{info[key].length}}</td>
+				<td>
+					<button @click="seen_id=1; detail_key=key;">显示详情</button>
+				</td>
+			</tr>
+		</table>
 	</div>
 	
+
+	<div v-if="seen_id==1">
+		<button @click="seen_id = 0;start();">返回首页</button>
+		<table>
+			<tr>
+				<td>文件名</td><td>路径</td><td>最近时间</td><td>连接数</td><td>状态</td>
+			</tr>
+			<tr v-for="item in info[detail_key]">
+				<td>{{item[0]}}</td><td>{{item[1]}}</td><td>{{item[2]}}</td><td>{{item[3]}}</td><td>{{item[4]}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	
+</div>
 <script type="text/javascript" src="js/vue.global.js"></script>
 <script type="text/javascript" src="js/axios.min.js"></script>
 <script type="text/javascript" src="js/func.js"></script>

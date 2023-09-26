@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(function(){
 			{
 				conditions: [
 					// 只有打开特定才显示pageAction
-					new chrome.declarativeContent.PageStateMatcher({pageUrl: {urlContains: '/lab'}})
+					new chrome.declarativeContent.PageStateMatcher({pageUrl: {urlContains: 'ai.abc'}})
 				],
 				actions: [new chrome.declarativeContent.ShowPageAction()]
 			}
