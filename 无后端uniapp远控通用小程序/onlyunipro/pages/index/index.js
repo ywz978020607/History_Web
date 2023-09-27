@@ -212,7 +212,7 @@ export default {
 								method:'GET',//请求方式  或GET，必须为大写
 								success: res => {
 									if (res.data["data"]["status"] == 0){
-										temp_data["+"+res.data["data"]["name"]]["status"] = "离线";
+										temp_data["+"+res.data["data"]["name"]]["status"] = "";
 									}
 								}
 							});}
@@ -252,7 +252,7 @@ export default {
 									method:'GET',//请求方式  或GET，必须为大写
 									success: res => {
 										if (res.data["data"]["status"] == 0){
-											temp_data["+"+res.data["data"]["name"]]["status"] = "离线";
+											temp_data["+"+res.data["data"]["name"]]["status"] = "";
 										}
 									}
 								});
