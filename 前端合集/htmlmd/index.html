@@ -1,0 +1,24 @@
+<head>
+  <title>摸鱼大鸽</title>
+  <!-- <link rel="stylesheet" href="github-markdown.css"> -->
+  <link rel="stylesheet" href="./default.min.css">
+</head>
+<body>
+
+<code markdown>
+  # 123
+</code>
+
+<script src="marked.min.js"></script>
+<script src="./highlight.min.js"></script>
+<script src="./highlightjs-line-numbers.js"></script>
+<script>
+  hljs.highlightAll();
+    hljs.initLineNumbersOnLoad();
+  var m=document.querySelectorAll('code[markdown]');
+  for(var i=0;i<m.length;i++){
+    m[i].outerHTML='<div>'+marked(m[i].innerHTML,{breaks: true})+'</div>';
+  }
+</script>
+</body>
+

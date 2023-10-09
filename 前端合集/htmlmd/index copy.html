@@ -1,0 +1,68 @@
+<head>
+  <title>摸鱼大鸽</title>
+  <!-- <link rel="stylesheet" href="github-markdown.css"> -->
+  <link rel="stylesheet" href="./default.min.css">
+  <script src="marked.min.js"></script>
+  <script src="./highlight.min.js"></script>
+  <script src="./highlightjs-line-numbers.js"></script>
+  <script>
+  hljs.highlightAll();
+  hljs.initLineNumbersOnLoad();
+  </script>
+
+  <style>
+    .hljs-ln-numbers {
+      list-style: none;
+      color: #AAA;
+      font-size: 1em;
+      width: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<code markdown>
+<!-- start -->
+
+<pre><code class="python">
+  a = 123
+  print(a)
+</code></pre>
+
+```python
+a = 123
+print(a)
+```
+
+123123
+# 1231
+123123
+adsfdf
+- wsdfaf
+  - sdaffd
+
+
+
+<!-- end -->
+</code>
+
+
+<code markdown>
+  <!-- start -->
+  ```python
+  a = 123
+  print(a)
+  ```
+  <!-- end -->
+  </code>
+
+
+<script>
+var m=document.querySelectorAll('code[markdown]');
+for(var i=0;i<m.length;i++){
+m[i].outerHTML='<div>'+marked(m[i].innerHTML,{breaks: true})+'</div>';
+}
+
+</script>
+</body>
+
