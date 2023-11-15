@@ -554,6 +554,7 @@ export default {
 				that.seen_id = -1;
 				console.log("地图轨迹绘制");
 				if(device_id){that.polykey = device_id;}
+				console.log("that.polykey:", that.polykey);
 				that.polyline[0].points = [];
 				that.polyline[0].markers = [];
 				uni.request({
@@ -567,7 +568,7 @@ export default {
 					},
 					method:'GET',//请求方式  或GET，必须为大写
 					success: res => {
-						// console.log('返回', res.data["data"]);
+						console.log('返回', res.data["data"]);
 						// 坐标转换
 						for (var in_idx = 0; in_idx < res.data["data"]["datastreams"][0]["datapoints"].length;in_idx++){
 							var translate_coor = that.translate_gps(
@@ -587,7 +588,10 @@ export default {
 								id: 0,
 								latitude:res.data["data"]["datastreams"][0]["datapoints"][0]["value"]["lat"],
 								longitude:res.data["data"]["datastreams"][0]["datapoints"][0]["value"]["lon"],
-								width:20, height:30,
+								width:20, height:20,
+								//#ifdef H5
+								iconPath: '/static/images/location.png',
+								//#endif
 								callout: { //气泡窗口
 									content: res.data["data"]["datastreams"][0]["datapoints"][0]["at"].split('.')[0], //文本
 									color: '#ffffff',
@@ -602,7 +606,10 @@ export default {
 								id: 1,
 								latitude:res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["value"]["lat"],
 								longitude:res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["value"]["lon"],
-								width:20, height:30,
+								width:20, height:20,
+								//#ifdef H5
+								iconPath: '/static/images/location.png',
+								//#endif
 								callout: { //气泡窗口
 									content: res.data["data"]["datastreams"][0]["datapoints"][res.data["data"]["datastreams"][0]["datapoints"].length - 1]["at"].split('.')[0], //文本
 									color: '#ffffff',
@@ -614,7 +621,7 @@ export default {
 								  }
 							},
 						);
-						console.log(that.polyline[0].markers);
+						// console.log(that.polyline[0].markers);
 					}
 				});
 			},

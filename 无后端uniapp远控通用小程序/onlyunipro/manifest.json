@@ -86,7 +86,7 @@
     "h5" : {
         "devServer" : {
             "disableHostCheck" : true, //禁止访问本地host文件
-            "https" : true,
+            "https" : false,
             "port" : 443, //修改项目端口
             "proxy" : {
                 /**配置服务器路径**/
@@ -106,8 +106,8 @@
         //     "mode" : "hash"
         // },
         "router" : {
-            "base" : "/files/public/locator/",
-            "mode" : "hash"
+            "base" : "./",
+            "mode" : "history"
         },
         "sdkConfigs" : {
             "maps" : {
@@ -115,7 +115,8 @@
                     "key" : "MYZBZ-NHSW7-MSRX7-PT7E4-VUALJ-46FWE"
                 }
             }
-        }
+        },
+        "template" : "tpl.html"
     },
     "vueVersion" : "2"
 }

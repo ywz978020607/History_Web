@@ -133,10 +133,10 @@
 											:markers="[{
 											id: data_index,
 											latitude: data_each.value.lat,longitude: data_each.value.lon,
-											width: 20,height: 30,
+											width: 20,height: 20,
 											title: each.comments,
 											<!-- #ifdef H5 -->
-											iconPath: '/static/images/location.png'
+											iconPath: '/static/images/location.png',
 											<!-- #endif -->
 										}]" style="width: 100%; height: 500rpx;"></map>
 										<!-- show-location -->
@@ -285,7 +285,7 @@
 						<div v-if="seen_id==-1" style="display: inline-block;">
 							<button class="btn btn-primary" @click="restore_seen_id();">返回原主页</button>
 							<span v-html="'<br>'"></span>
-							<map id="map" :longitude="polyline[0].points[0].lon" :latitude="polyline[0].points[0].lat"
+							<map id="map" :longitude="polyline[0].points[0].longitude" :latitude="polyline[0].points[0].latitude"
 										:include-points="polyline[0].points" :polyline="polyline" :markers="polyline[0].markers" style="width: 100%; height: 750rpx;"></map>
 							<div class="flex" style="white-space: pre-wrap;">
 								<uni-datetime-picker type="datetime" v-model="timeStart" @change="changeTime($event, 'start')" />
