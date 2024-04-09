@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./js/bootstrap.min.css">
+  <script src="./js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body style="height: 100%; margin: 0">
+  <div id="app1">
+    <div style="margin:auto;text-align:center;">
+      <h1>{{datashow['topic']}}</h1>
+    </div>
+
+    <div class="myright" style="position: absolute;height:400px;top: 50px;right: 10px;width: 60%;background-color: beige;">
+      <div id="container" style="height: 100%"></div>
+    </div>
+
+    <div class="myleft" style="width: 35%;left: 10px; top: 10px;">
+      <table class="table" style="border-style: dashed;">
+        <tr>
+          <td class="table-primary">时间</td>
+          <td >{{datashow['time']}}</td>
+        </tr>
+        <tr>
+          <td class="table-primary">状态</td>
+          <td>{{datashow['status']}}</td>
+        </tr>
+        <tr>
+          <td class="table-primary">IP地址</td>
+          <td>{{datashow['ip']}}</td>
+        </tr>
+        <tr>
+          <td class="table-primary">人数</td>
+          <td>{{datashow['num']}}</td>
+        </tr>
+      </table>
+
+      <table class="table" style="border-style: dashed;">
+        <tr class="table-primary">
+          <td >姓名</td>
+          <td >分数</td>
+        </tr>
+        <tr v-for="(item, key, idx) in datashow['details']">
+          <td class="table-secondary">{{key}}</td>
+          <td>{{item}}</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
+  <script src="./js/vue.global.js"></script>
+  <!-- <script src="./js/axios.min.js"></script> -->
+  <script type="text/javascript">
+    const ListRendering = {
+      data() {
+        return {
+          option: {
+            title: {
+              text: 'Stacked Line'
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+            },
+            grid: {
+              left: '3%',
+              right: '4%',
+              bottom: '3%',
+              containLabel: true
+            },
+            toolbox: {
+              feature: {
+                saveAsImage: {}
+              }
+            },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+              type: 'value'
+            },
+            series: [
+              {
+                name: 'Email',
+                type: 'line',
+                stack: 'Total',
+                data: [120, 132, 101, 134, 90, 230, 210]
+              },
+              {
+                name: 'Union Ads',
+                type: 'line',
+                stack: 'Total',
+                data: [220, 182, 191, 234, 290, 330, 310]
+              },
+              {
+                name: 'Video Ads',
+                type: 'line',
+                stack: 'Total',
+                data: [150, 232, 201, 154, 190, 330, 410]
+              },
+              {
+                name: 'Direct',
+                type: 'line',
+                stack: 'Total',
+                data: [320, 332, 301, 334, 390, 330, 320]
+              },
+              {
+                name: 'Search Engine',
+                type: 'line',
+                stack: 'Total',
+                data: [820, 932, 901, 934, 1290, 1330, 1320]
+              }
+            ]
+          },
+          myChart: null,
+          datashow: {
+            "details": {
+              "张三": 43,
+              "王五": 85,
+              "杨六": 77
+            },
+            "ip": "192.168.1.100",
+            "num": 3,
+            "time": "2024-04-09 15:20:20",
+            "topic": "1班智慧大屏显示示例",
+            "status": "正常"
+          },
+        }
+      },
+
+      mounted () {
+        this.datashow['time'] = new Date(new Date().getTime()).toISOString();
+        this.init_plot();
+        this.change_plot();
+
+      },
+
+      methods: {
+        init_plot(){
+          var dom = document.getElementById('container');
+          this.myChart = echarts.init(dom, null, {
+            renderer: 'canvas',
+            useDirtyRect: false
+          });
+          var app = {};
+          var option = this.option;
+          if (option && typeof option === 'object') {
+            this.myChart.setOption(this.option); // 绘制
+          }
+          window.addEventListener('resize', this.myChart.resize);
+        },
+
+        change_plot(){
+          console.log("execute change_plot");
+          var that = this;
+          setTimeout(function(){
+            that.option["title"]["text"]='123';
+            that.myChart.setOption(that.option); // 更新
+          }, 2000)
+        },
+
+        // end methods
+      },
+
+    }
+
+    Vue.createApp(ListRendering).mount('#app1');
+  </script>
+</body>
+</html>
